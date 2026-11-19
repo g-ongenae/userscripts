@@ -20,14 +20,17 @@
   const TRANSLATE = '#main > .translate-button'; // "Translate to French" / "See original", state="toggled" when translated
   const EXPANDER = '#main > ytd-expander'; // the text; "collapsed" while cut to 4 lines
   const BTN = 'ytc-btn';
+  // On a comment whose replacement button is mounted and shown: only then is the native control hidden
+  const HAS_TRANSLATE = 'data-ytc-translate';
+  const HAS_EXPAND = 'data-ytc-expand';
 
   // ---------- Styles ----------
-  // Injected at document-start so the text links never flash before being replaced
+  // Injected at document-start; a native control stays visible until its replacement is in place
   const style = document.createElement('style');
   style.textContent = `
-    ${COMMENT} ${TRANSLATE},
-    ${COMMENT} ${EXPANDER} > #more,
-    ${COMMENT} ${EXPANDER} > #less { display: none !important; }
+    ${COMMENT}[${HAS_TRANSLATE}] ${TRANSLATE},
+    ${COMMENT}[${HAS_EXPAND}] ${EXPANDER} > #more,
+    ${COMMENT}[${HAS_EXPAND}] ${EXPANDER} > #less { display: none !important; }
     /* Look comes from the classes copied off the Like button */
     .${BTN} { position: relative; }
     .${BTN}[hidden] { display: none !important; }
@@ -75,20 +78,18 @@
     const toolbar = comment.querySelector('#action-buttons #toolbar');
     if (!toolbar) return null;
     let btn = toolbar.querySelector(`:scope > .${BTN}[data-kind="${kind}"]`);
-    if (btn) return btn;
+    if (btn) {
+      styleLikeLike(btn, toolbar);
+      return btn;
+    }
     btn = document.createElement('button');
     btn.type = 'button';
+    btn.className = BTN;
     btn.dataset.kind = kind;
     const inner = document.createElement('div');
-    // Same classes as Like (an icon button too) so size, padding and hover match
-    const like = toolbar.querySelector('#like-button yt-button-shape > :is(button, a)');
-    btn.className = `${like ? like.className : ''} ${BTN}`;
-    const likeIcon = like && like.querySelector('[class*="Icon"]');
-    if (likeIcon) inner.className = likeIcon.className;
     inner.setAttribute('aria-hidden', 'true');
     btn.appendChild(inner);
-    const feedback = like && like.querySelector('yt-touch-feedback-shape');
-    if (feedback) btn.appendChild(feedback.cloneNode(true));
+    styleLikeLike(btn, toolbar);
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -99,6 +100,20 @@
     if (before) before.after(btn);
     else toolbar.appendChild(btn);
     return btn;
+  }
+
+  /** Same classes as Like (an icon button too) so size, padding and hover match. YouTube may render
+   *  Like after the toolbar: a button made before then is styled on a later pass. */
+  function styleLikeLike(btn, toolbar) {
+    if (btn.hasAttribute('data-styled')) return;
+    const like = toolbar.querySelector('#like-button yt-button-shape > :is(button, a)');
+    if (!like) return;
+    btn.setAttribute('data-styled', '');
+    btn.className = `${like.className} ${BTN}`;
+    const likeIcon = like.querySelector('[class*="Icon"]');
+    if (likeIcon) btn.firstElementChild.className = likeIcon.className;
+    const feedback = like.querySelector('yt-touch-feedback-shape');
+    if (feedback) btn.appendChild(feedback.cloneNode(true));
   }
 
   function setIcon(btn, name) {
@@ -145,6 +160,7 @@
         iconName: 'translate',
       });
     }
+    set(comment, HAS_TRANSLATE, tBtn && !tBtn.hidden ? '' : null);
 
     const expander = comment.querySelector(EXPANDER);
     const more = expander && expander.querySelector(':scope > #more');
@@ -160,6 +176,7 @@
       });
       set(eBtn, 'aria-expanded', open ? 'true' : 'false');
     }
+    set(comment, HAS_EXPAND, eBtn && !eBtn.hidden ? '' : null);
   }
 
   // ---------- Main pass (YouTube is an SPA) ----------
