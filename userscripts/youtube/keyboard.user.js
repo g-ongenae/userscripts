@@ -21,6 +21,8 @@
   const MARGIN_PX = 8;
   // How long to wait for the reply box YouTube opens
   const WAIT_MS = 3000;
+  // How long to wait for YouTube to load the comments once their section is scrolled to
+  const LOAD_MS = 10000;
 
   // A comment or a reply. A thread is a comment with its replies; with threaded replies, a reply that
   // has replies of its own is a thread too (is-sub-thread), nested in its parent's.
@@ -133,11 +135,12 @@
     show(el);
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => el.remove(), 2500);
+    return el;
   }
 
   // ---------- Helpers ----------
-  // Resolves with what `find` returns once it returns something, or null after WAIT_MS
-  function waitFor(find) {
+  // Resolves with what `find` returns once it returns something, or null after `ms`
+  function waitFor(find, ms = WAIT_MS) {
     return new Promise((resolve) => {
       const found = find();
       if (found) return resolve(found);
@@ -158,7 +161,7 @@
         });
       });
       observer.observe(document.body, { childList: true, subtree: true });
-      const timer = setTimeout(() => done(null), WAIT_MS);
+      const timer = setTimeout(() => done(null), ms);
     });
   }
 
@@ -180,8 +183,8 @@
     return bar && visible(bar) ? Math.max(0, bar.getBoundingClientRect().bottom) : 0;
   }
 
-  function onScreen(comment) {
-    const r = comment.getBoundingClientRect();
+  function onScreen(el) {
+    const r = el.getBoundingClientRect();
     return r.bottom > topInset() && r.top < window.innerHeight;
   }
 
@@ -228,7 +231,13 @@
     if (!section || !visible(section)) return toast('No comments on this page');
     section.style.scrollMarginTop = `${topInset() + MARGIN_PX}px`;
     section.scrollIntoView({ block: 'start' });
-    toast('Loading the comments…');
+    const message = toast('Loading the comments…');
+    // The first comment is selected once loaded, unless another key moved to one or the user scrolled away
+    waitFor(() => comments()[0] || null, LOAD_MS).then((first) => {
+      message.remove();
+      if (!first || (current && visible(current) && onScreen(current)) || !onScreen(section)) return;
+      select(first);
+    });
   }
 
   // The target, made current
@@ -300,18 +309,28 @@
 
   // ---------- Help ----------
   let help = null;
+  let helpOpener = null; // what had the focus before the help opened, focused again once it closes
 
   function toggleHelp() {
     if (help) {
       help.remove();
       help = null;
+      if (helpOpener?.isConnected) helpOpener.focus({ preventScroll: true });
+      helpOpener = null;
       return;
     }
+    helpOpener = document.activeElement;
     help = document.createElement('div');
     help.className = 'help';
+    // Focused, so that the player behind it no longer receives the keys; Tab is kept inside it below
     const panel = document.createElement('div');
     panel.className = 'panel';
+    panel.tabIndex = -1;
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-modal', 'true');
+    panel.setAttribute('aria-labelledby', 'ytk-help-title');
     const title = document.createElement('h2');
+    title.id = 'ytk-help-title';
     title.textContent = 'Keyboard shortcuts';
     const table = document.createElement('table');
     for (const [key, label] of SHORTCUTS) {
@@ -332,6 +351,7 @@
     help.append(panel);
     help.addEventListener('click', (e) => e.target === help && toggleHelp());
     show(help);
+    panel.focus({ preventScroll: true });
   }
 
   // ---------- Keys ----------
@@ -351,23 +371,28 @@
   window.addEventListener(
     'keydown',
     (e) => {
+      // While the help is open, no key reaches YouTube: Esc and H close it, Tab stays on it, and the
+      // others keep their default action on it (scrolling it)
+      if (help) {
+        e.stopImmediatePropagation();
+        const close = e.key === 'Escape' || (e.key === 'H' && !e.metaKey && !e.ctrlKey && !e.altKey);
+        if (close || e.key === 'Tab') e.preventDefault();
+        if (close && !e.repeat) toggleHelp();
+        return;
+      }
+
       if (e.isComposing || e.metaKey || e.ctrlKey || e.altKey) return;
       const el = e.target instanceof Element ? e.target : null;
 
+      // Other fields (search, the comment box) keep YouTube's Esc
       if (e.key === 'Escape') {
-        if (help) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          toggleHelp();
-        } else if (el?.closest(EDITABLE)) {
-          el.blur();
-        }
+        if (el?.closest(REPLY_BOX)) el.blur();
         return;
       }
 
       if (el?.closest(EDITABLE)) return;
       const action = KEYS[e.key];
-      if (!action || (help && e.key !== 'H')) return;
+      if (!action) return;
       e.preventDefault();
       e.stopImmediatePropagation();
       // Holding a key repeats only the moves
@@ -375,4 +400,6 @@
     },
     true,
   );
+  // YouTube plays / pauses on the release of Space: none reaches it while the help is open either
+  window.addEventListener('keyup', (e) => help && e.stopImmediatePropagation(), true);
 })();
