@@ -43,6 +43,7 @@ higher `@version`.
 | Twitch | [Followed channels on the home page](https://greasyfork.org/en/scripts/604920-twitch-followed-channels-on-the-home-page) — no carousel, no recommendations | [Install](https://update.greasyfork.org/scripts/604920.user.js) |
 | YouTube | Comment icon buttons — translate and read more as icons next to Reply | [Install](https://raw.githubusercontent.com/g-ongenae/userscripts/main/userscripts/youtube/comment-buttons.user.js) ² |
 | YouTube | [Fold related videos](https://greasyfork.org/en/scripts/604921-youtube-fold-related-videos) — the video takes the right column's space | [Install](https://update.greasyfork.org/scripts/604921.user.js) |
+| YouTube | Keyboard shortcuts — move between comments, reply, show replies | [Install](https://raw.githubusercontent.com/g-ongenae/userscripts/main/userscripts/youtube/keyboard.user.js) ² |
 | YouTube | [Subscriptions on the home page](https://greasyfork.org/en/scripts/604922-youtube-subscriptions-on-the-home-page) — your channels instead of an empty feed | [Install](https://update.greasyfork.org/scripts/604922.user.js) |
 
 ¹ Not on Greasy Fork: a rewrite of [Celuni's script](https://greasyfork.org/scripts/397171),
