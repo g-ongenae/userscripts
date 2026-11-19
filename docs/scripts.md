@@ -286,3 +286,18 @@ and the last state is remembered.
 Fills the empty YouTube home page (watch history off) with a grid of your
 subscribed channels, read from the sidebar; channels with new videos come first
 and carry a blue dot.
+
+### [`youtube/keyboard.user.js`](../userscripts/youtube/keyboard.user.js)
+
+Drives YouTube comments from the keyboard, with keys YouTube does not use: its
+own shortcuts (Space, j, k, c, ., ?…) keep working as usual.
+
+| Key | Action |
+| --- | --- |
+| **n** / **p** | move to the next / previous comment or reply (highlighted, skipping hidden replies); from the video, **n** scrolls down to the first comment |
+| **r** | reply to it (opens and focuses the reply box) |
+| **e** | show or hide its replies; on a reply, those of its thread |
+| **g** | go to the top |
+| **h** | open the home page |
+| **Esc** | leave the reply box |
+| **H** (Shift+h) | list these shortcuts and YouTube's own |
