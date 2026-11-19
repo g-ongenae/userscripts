@@ -1,6 +1,2 @@
 # Development tools of the JavaScript files, installed by `npm ci`
 node_modules/
-
-# Python bytecode of the CI scripts
-__pycache__/
-*.pyc
