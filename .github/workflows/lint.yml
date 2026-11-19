@@ -1,0 +1,42 @@
+# Run `npm run lint` on every push and pull request, and make sure every changed
+# userscript carries a higher @version.
+name: lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  javascript:
+    name: ESLint and Prettier
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      # Neither tool needs an install script to run.
+      - name: Install ESLint and Prettier
+        run: npm ci --ignore-scripts
+
+      - name: Check formatting and lint JavaScript files
+        run: npm run lint
+
+  userscript-versions:
+    name: Userscript versions
+    runs-on: ubuntu-latest
+    steps:
+      # The check compares against the commit this push or pull request starts
+      # from, so it needs the history and not only the last commit.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check that changed userscripts raise their @version
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: python3 .github/scripts/check-userscript-versions.py "$BASE" HEAD
