@@ -265,6 +265,16 @@ it.
 
 ## YouTube
 
+### [`youtube/comment-buttons.user.js`](../userscripts/youtube/comment-buttons.user.js)
+
+Turns two text links of comments into icon buttons next to **Reply**, styled
+like **Like**:
+
+- **Translate to …** (in your language) becomes a 文A icon, highlighted while
+  the comment shows its translation; clicking it again shows the original.
+- **Read more** / **Show less** become the ↨ / ↥ icons of the LinkedIn
+  declutter, shown only when the comment is too long for its 4 lines.
+
 ### [`youtube/fold-related.user.js`](../userscripts/youtube/fold-related.user.js)
 
 Folds the right column of a YouTube video (filter chips and related videos) so
