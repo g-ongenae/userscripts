@@ -2,11 +2,13 @@
 // @name         Demonic Scans — Favorites
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.0.0
+// @version      1.0.1
 // @description  Keeps a list of favorite titles on Demonic Scans, without an account: an Add to favorites button on each title, and a star in the navigation bar opening the list with the date of each title's latest chapter, most recent first. Made for a phone's browser.
 // @license      MIT
-// @homepageURL  https://github.com/g-ongenae/dotfiles/blob/main/userscripts/demonicscans-favorites.user.js
-// @supportURL   https://github.com/g-ongenae/dotfiles/issues
+// @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/demonicscans/favorites.user.js
+// @supportURL   https://github.com/g-ongenae/userscripts/issues
+// @updateURL    https://update.greasyfork.org/scripts/606012.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/606012.user.js
 // @match        https://demonicscans.org/*
 // @run-at       document-idle
 // @noframes

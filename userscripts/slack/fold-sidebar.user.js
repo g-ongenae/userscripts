@@ -2,11 +2,13 @@
 // @name         Slack — Fold sidebar
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.0.2
+// @version      1.0.3
 // @description  Adds a button left of the back/forward arrows of Slack's top bar that folds the sidebar (workspace name, channels, DMs…) so the conversation takes its space. The choice is remembered.
 // @license      MIT
-// @homepageURL  https://github.com/g-ongenae/dotfiles/blob/main/userscripts/slack-fold-sidebar.user.js
-// @supportURL   https://github.com/g-ongenae/dotfiles/issues
+// @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/slack/fold-sidebar.user.js
+// @supportURL   https://github.com/g-ongenae/userscripts/issues
+// @updateURL    https://update.greasyfork.org/scripts/604918.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/604918.user.js
 // @match        https://app.slack.com/*
 // @run-at       document-start
 // @noframes

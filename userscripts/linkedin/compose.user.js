@@ -2,11 +2,13 @@
 // @name         LinkedIn — Better post composer
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.4.1
+// @version      1.4.2
 // @description  Makes the "Start a post" dialog fill the window; adds Bold, Italic and Strikethrough buttons (Cmd/Ctrl+B, Cmd/Ctrl+I, Cmd/Ctrl+Shift+X, which also work in comments) that restyle the selection with Unicode letters and marks; shows attached images as a row of thumbnails at the bottom; counts words and characters against the 3,000 characters limit. Unicode bold, italic and struck-through letters are poorly read by screen readers and are not found by LinkedIn's search.
 // @license      MIT
-// @homepageURL  https://github.com/g-ongenae/dotfiles/blob/main/userscripts/linkedin-compose.user.js
-// @supportURL   https://github.com/g-ongenae/dotfiles/issues
+// @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/linkedin/compose.user.js
+// @supportURL   https://github.com/g-ongenae/userscripts/issues
+// @updateURL    https://update.greasyfork.org/scripts/604914.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/604914.user.js
 // @match        https://www.linkedin.com/*
 // @run-at       document-idle
 // @noframes

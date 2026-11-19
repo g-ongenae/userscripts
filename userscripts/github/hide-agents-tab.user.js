@@ -2,11 +2,13 @@
 // @name         GitHub — Hide the Agents tab
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.4.0
+// @version      1.4.1
 // @description  Hides the "Agents" tab of the repository navigation bar, its entry in the overflow menu shown on narrow windows, the Copilot button (and its dropdown) of the page header, the Copilot panel button of the pull request header, and the "Ask about this diff" button of each file in the pull request diff.
 // @license      MIT
-// @homepageURL  https://github.com/g-ongenae/dotfiles/blob/main/userscripts/github-hide-agents-tab.user.js
-// @supportURL   https://github.com/g-ongenae/dotfiles/issues
+// @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/github/hide-agents-tab.user.js
+// @supportURL   https://github.com/g-ongenae/userscripts/issues
+// @updateURL    https://update.greasyfork.org/scripts/604907.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/604907.user.js
 // @match        https://github.com/*
 // @run-at       document-start
 // @noframes

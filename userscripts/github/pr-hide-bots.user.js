@@ -2,11 +2,13 @@
 // @name         GitHub — Hide bots on pull requests
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.1.1
+// @version      1.1.2
 // @description  Adds a "Hide bots" button to pull request conversations: it hides the comments and reviews of bots and AI reviewers (except SonarCloud, Socket and algoanbot), the replies written by Claude (Co-Authored-By: Claude … noreply@anthropic.com or 🤖 Generated with Claude Code), the @coderabbitai review commands, the resolved threads and the timeline events, leaving the description, the commits, the human comments and the linked issues and pull requests. Works on the Overview preview (the button sits left of All / Unresolved / Mine) and on the classic conversation (in the page header). The choice is remembered.
 // @license      MIT
-// @homepageURL  https://github.com/g-ongenae/dotfiles/blob/main/userscripts/github-pr-hide-bots.user.js
-// @supportURL   https://github.com/g-ongenae/dotfiles/issues
+// @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/github/pr-hide-bots.user.js
+// @supportURL   https://github.com/g-ongenae/userscripts/issues
+// @updateURL    https://update.greasyfork.org/scripts/604910.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/604910.user.js
 // @match        https://github.com/*
 // @run-at       document-start
 // @noframes

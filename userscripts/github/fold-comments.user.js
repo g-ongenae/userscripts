@@ -2,11 +2,13 @@
 // @name         GitHub — Fold comments
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.1.1
+// @version      1.1.2
 // @description  Adds a chevron button to the header of each review, comment and description on GitHub pull requests (the Overview preview and the classic conversation) and issues: it folds the comment down to its header. Alt-click folds or unfolds every comment of the page. Each choice is remembered.
 // @license      MIT
-// @homepageURL  https://github.com/g-ongenae/dotfiles/blob/main/userscripts/github-fold-comments.user.js
-// @supportURL   https://github.com/g-ongenae/dotfiles/issues
+// @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/github/fold-comments.user.js
+// @supportURL   https://github.com/g-ongenae/userscripts/issues
+// @updateURL    https://update.greasyfork.org/scripts/604905.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/604905.user.js
 // @match        https://github.com/*
 // @run-at       document-start
 // @noframes

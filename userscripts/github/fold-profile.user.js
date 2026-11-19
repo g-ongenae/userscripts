@@ -2,11 +2,13 @@
 // @name         GitHub — Fold profile sections
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.1.2
+// @version      1.1.3
 // @description  Folds the README and the pinned repositories on GitHub user and organization profiles down to their headers; a chevron button in each header unfolds it (next to the edit pencil on your own README). Each choice is remembered.
 // @license      MIT
-// @homepageURL  https://github.com/g-ongenae/dotfiles/blob/main/userscripts/github-fold-profile.user.js
-// @supportURL   https://github.com/g-ongenae/dotfiles/issues
+// @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/github/fold-profile.user.js
+// @supportURL   https://github.com/g-ongenae/userscripts/issues
+// @updateURL    https://update.greasyfork.org/scripts/604906.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/604906.user.js
 // @match        https://github.com/*
 // @run-at       document-start
 // @noframes
