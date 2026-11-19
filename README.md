@@ -41,11 +41,14 @@ higher `@version`.
 | Slack | [Fold sidebar](https://greasyfork.org/en/scripts/604918-slack-fold-sidebar) — a button folding the sidebar | [Install](https://update.greasyfork.org/scripts/604918.user.js) |
 | Slack | [Upload shortcut](https://greasyfork.org/en/scripts/604919-slack-upload-shortcut) — Cmd/Ctrl+U opens the file picker | [Install](https://update.greasyfork.org/scripts/604919.user.js) |
 | Twitch | [Followed channels on the home page](https://greasyfork.org/en/scripts/604920-twitch-followed-channels-on-the-home-page) — no carousel, no recommendations | [Install](https://update.greasyfork.org/scripts/604920.user.js) |
+| YouTube | Comment icon buttons — translate and read more as icons next to Reply | [Install](https://raw.githubusercontent.com/g-ongenae/userscripts/main/userscripts/youtube/comment-buttons.user.js) ² |
 | YouTube | [Fold related videos](https://greasyfork.org/en/scripts/604921-youtube-fold-related-videos) — the video takes the right column's space | [Install](https://update.greasyfork.org/scripts/604921.user.js) |
 | YouTube | [Subscriptions on the home page](https://greasyfork.org/en/scripts/604922-youtube-subscriptions-on-the-home-page) — your channels instead of an empty feed | [Install](https://update.greasyfork.org/scripts/604922.user.js) |
 
 ¹ Not on Greasy Fork: a rewrite of [Celuni's script](https://greasyfork.org/scripts/397171),
 installed and updated from this repository.
+
+² Not on Greasy Fork yet: installed and updated from this repository.
 
 What each script does, in detail, and the settings at the top of some of them:
 [docs/scripts.md](docs/scripts.md).
