@@ -21,4 +21,11 @@ export default [
       },
     },
   },
+  {
+    // The CI scripts and their tests are ES modules run by Node.js.
+    files: ['.github/scripts/**/*.mjs'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ];

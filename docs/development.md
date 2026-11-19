@@ -7,9 +7,9 @@ How to change a userscript, check it and publish it on Greasy Fork.
 ```text
 userscripts/<website>/<name>.user.js   # one folder per website, no website prefix in the name
 .github/workflows/lint.yml             # ESLint, Prettier and the @version check
-.github/scripts/                       # the @version check and its unit test
+.github/scripts/                       # the @version check and its tests (Node.js)
 eslint.config.mjs, .prettierrc.json    # lint and format rules
-package.json, package-lock.json        # pinned ESLint and Prettier
+package.json, package-lock.json        # npm scripts, pinned ESLint and Prettier
 ```
 
 A script is a single classic browser script with a `// ==UserScript==` header
@@ -58,11 +58,11 @@ The header of a published script follows this shape:
 ## Checks
 
 ```bash
-npm ci --ignore-scripts    # once: install ESLint and Prettier into node_modules/
-npm run lint               # ESLint findings and Prettier differences
-npm run lint:fix           # apply ESLint's fixes, then reformat in place
-python3 .github/scripts/check-userscript-versions.py origin/main   # working tree against main
-python3 -m unittest discover -s .github/scripts -p 'test_*.py'     # test the version check
+npm ci --ignore-scripts                 # once: install ESLint and Prettier into node_modules/
+npm run lint                            # ESLint findings and Prettier differences
+npm run lint:fix                        # apply ESLint's fixes, then reformat in place
+npm run check-versions -- origin/main   # version check: working tree against main
+npm test                                # test the version check
 ```
 
 - **ESLint** runs its recommended rules (`eslint.config.mjs`); userscripts are
@@ -73,8 +73,8 @@ python3 -m unittest discover -s .github/scripts -p 'test_*.py'     # test the ve
 - **The version check** fails when a script changed since the merge base with
   the given branch without a higher `@version`. Added scripts are not checked.
 
-[`.github/workflows/lint.yml`](../.github/workflows/lint.yml) runs `npm run lint`
-and the version check on every push to `main` and every pull request.
+[`.github/workflows/lint.yml`](../.github/workflows/lint.yml) runs `npm run lint`,
+`npm test` and the version check on every push to `main` and every pull request.
 
 ## Trying a change
 

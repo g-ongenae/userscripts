@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint . && prettier --check \"**/*.{js,mjs}\"",
-    "lint:fix": "eslint --fix . && prettier --write \"**/*.{js,mjs}\""
+    "lint:fix": "eslint --fix . && prettier --write \"**/*.{js,mjs}\"",
+    "test": "node --test \".github/scripts/*.test.mjs\"",
+    "check-versions": "node .github/scripts/check-userscript-versions.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

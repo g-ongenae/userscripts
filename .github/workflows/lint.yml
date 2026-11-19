@@ -1,5 +1,5 @@
-# Run `npm run lint` on every push and pull request, and make sure every changed
-# userscript carries a higher @version.
+# Run `npm run lint` and the tests of the CI scripts on every push and pull
+# request, and make sure every changed userscript carries a higher @version.
 name: lint
 
 on:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   javascript:
-    name: ESLint and Prettier
+    name: ESLint, Prettier and tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,6 +26,9 @@ jobs:
       - name: Check formatting and lint JavaScript files
         run: npm run lint
 
+      - name: Test the CI scripts
+        run: npm test
+
   userscript-versions:
     name: Userscript versions
     runs-on: ubuntu-latest
@@ -36,7 +39,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
       - name: Check that changed userscripts raise their @version
         env:
           BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
-        run: python3 .github/scripts/check-userscript-versions.py "$BASE" HEAD
+        run: node .github/scripts/check-userscript-versions.mjs "$BASE" HEAD
