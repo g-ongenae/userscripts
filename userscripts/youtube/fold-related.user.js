@@ -2,11 +2,13 @@
 // @name         YouTube — Fold related videos
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.1.2
+// @version      1.1.3
 // @description  Folds the right column of a YouTube video (filter chips and related videos) so the video takes its space; a small round button on the right edge unfolds it. The choice is remembered.
 // @license      MIT
-// @homepageURL  https://github.com/g-ongenae/dotfiles/blob/main/userscripts/youtube-fold-related.user.js
-// @supportURL   https://github.com/g-ongenae/dotfiles/issues
+// @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/youtube/fold-related.user.js
+// @supportURL   https://github.com/g-ongenae/userscripts/issues
+// @updateURL    https://update.greasyfork.org/scripts/604921.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/604921.user.js
 // @match        https://www.youtube.com/*
 // @run-at       document-start
 // @noframes

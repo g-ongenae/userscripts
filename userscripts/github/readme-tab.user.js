@@ -2,11 +2,13 @@
 // @name         GitHub — README tab
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.2.0
+// @version      1.2.1
 // @description  Moves the README of GitHub repositories out of the Code tab into its own "README" tab, first in the repository navigation bar: Code shows the files only, README shows the README (and its License / Code of conduct tabs) instead of the files. The repository home opens on the README tab; the tab is disabled on pages without a README.
 // @license      MIT
-// @homepageURL  https://github.com/g-ongenae/dotfiles/blob/main/userscripts/github-readme-tab.user.js
-// @supportURL   https://github.com/g-ongenae/dotfiles/issues
+// @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/github/readme-tab.user.js
+// @supportURL   https://github.com/g-ongenae/userscripts/issues
+// @updateURL    https://update.greasyfork.org/scripts/605019.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/605019.user.js
 // @match        https://github.com/*
 // @run-at       document-start
 // @noframes

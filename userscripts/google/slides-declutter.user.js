@@ -2,11 +2,13 @@
 // @name         Google Slides — Declutter the editor
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.2.1
+// @version      1.2.2
 // @description  Gives the slide more room in the Google Slides editor: folds away the insert rail on the right (Slide, Image, Media, Uploads, Convert to video — all still in the Insert menu) and hands its room to the slide, with a chevron at the end of the toolbar to bring it back (the choice is remembered); closes the "Enhance this slide" AI button under the slide whenever it shows up.
 // @license      MIT
-// @homepageURL  https://github.com/g-ongenae/dotfiles/blob/main/userscripts/google-slides-declutter.user.js
-// @supportURL   https://github.com/g-ongenae/dotfiles/issues
+// @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/google/slides-declutter.user.js
+// @supportURL   https://github.com/g-ongenae/userscripts/issues
+// @updateURL    https://update.greasyfork.org/scripts/604913.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/604913.user.js
 // @match        https://docs.google.com/presentation/*
 // @run-at       document-start
 // @noframes

@@ -2,11 +2,13 @@
 // @name         Reddit — Declutter
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.0.0
+// @version      1.0.1
 // @description  Hides Reddit's sign-up panel on the left, the right column (related posts, community card, footer links), ads, the "more posts" feed under the comments and Google's sign-in prompt; widens the main column and shows the whole text of a post on its own page.
 // @license      MIT
-// @homepageURL  https://github.com/g-ongenae/dotfiles/blob/main/userscripts/reddit-declutter.user.js
-// @supportURL   https://github.com/g-ongenae/dotfiles/issues
+// @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/reddit/declutter.user.js
+// @supportURL   https://github.com/g-ongenae/userscripts/issues
+// @updateURL    https://update.greasyfork.org/scripts/606132.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/606132.user.js
 // @match        https://www.reddit.com/*
 // @run-at       document-start
 // @noframes

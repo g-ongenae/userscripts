@@ -2,11 +2,13 @@
 // @name         LinkedIn — Declutter & wide feed
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.4.10
+// @version      1.4.11
 // @description  Hides Jobs, For Business, Premium upsells, Groups/Newsletters/Events, the footer and the right rail; widens the feed and single posts and lays out the posts of company and profile pages like the feed; moves the composer to the left column; shows post images beside the text; adds panel buttons folding the left column of the feed and the side column of company and profile pages (folded by default); removes "Show translation" on French/English posts.
 // @license      MIT
-// @homepageURL  https://github.com/g-ongenae/dotfiles/blob/main/userscripts/linkedin-declutter.user.js
-// @supportURL   https://github.com/g-ongenae/dotfiles/issues
+// @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/linkedin/declutter.user.js
+// @supportURL   https://github.com/g-ongenae/userscripts/issues
+// @updateURL    https://update.greasyfork.org/scripts/604915.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/604915.user.js
 // @match        https://www.linkedin.com/*
 // @run-at       document-idle
 // @noframes
