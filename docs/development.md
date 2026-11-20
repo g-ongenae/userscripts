@@ -95,5 +95,6 @@ Scripts are published under
   `main`: `https://raw.githubusercontent.com/g-ongenae/userscripts/main/userscripts/<website>/<name>.user.js`.
   Scripts that synced from the dotfiles repository need that URL changed.
 - **Publishing a new script**: create it on Greasy Fork from its raw URL, then
-  add `@updateURL` / `@downloadURL` with the new id and an install link in the
-  [README](../README.md#install) and a section in [scripts.md](scripts.md).
+  add an install link in the [README](../README.md#install) and a section in
+  [scripts.md](scripts.md). Greasy Fork handles updates of the copies
+  installed from it, so the script itself does not change.
