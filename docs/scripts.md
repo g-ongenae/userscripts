@@ -92,13 +92,15 @@ how many items are hidden, and the choice is remembered.
 
 Shows the image files of GitHub pull request diffs (**Files changed**) as
 thumbnails of 200 pixels high (`THUMB_HEIGHT`) instead of GitHub's full-size
-viewer. Hovering a thumbnail, or an image of the description, a comment or a
-review, shows it bigger in the middle of the window: at its own size, at most as large as the window, and only
-when that is clearly bigger than on the page. It shows after 300 ms of hover
-(`DELAY_MS`) and closes when the pointer leaves the picture, on a click or with
-Escape; clicking a thumbnail opens the image in a new tab. Where a thumbnail
-cannot load, GitHub's viewer comes back. It is not published on Greasy Fork
-yet.
+viewer; a changed image shows its **Before** and **After** versions side by
+side, and a **Compare in GitHub's viewer** button brings back GitHub's 2-up,
+Swipe and Onion Skin views for that file. Hovering a thumbnail, or an image of
+the description, a comment or a review, shows it bigger in the middle of the
+window: at its own size, at most as large as the window, and only when that is
+clearly bigger than on the page. It shows after 300 ms of hover (`DELAY_MS`)
+and closes when the pointer leaves the picture, on a click or with Escape;
+clicking a thumbnail opens the image in a new tab. Where a thumbnail cannot
+load, GitHub's viewer comes back. It is not published on Greasy Fork yet.
 
 ### [`github/readme-tab.user.js`](../userscripts/github/readme-tab.user.js)
 

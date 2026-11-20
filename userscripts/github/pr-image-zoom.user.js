@@ -34,20 +34,43 @@
   const THUMBS = 'ghz-thumbs';
   const THUMB = 'ghz-thumb';
   const REPLACED = 'data-ghz-replaced'; // on a viewer hidden behind thumbnails
+  const NATIVE = 'data-ghz-native'; // on thumbnails put aside for GitHub's viewer
   const PREVIEW = 'ghz-preview';
   const SHOWN = 'ghz-preview--shown';
 
   // ---------- Styles ----------
   const style = document.createElement('style');
   style.textContent = `
-    ${VIEWER}[${REPLACED}] { display: none !important; }
+    /* Not display: none, so the viewer keeps its width and measures its content right for when it is shown */
+    ${VIEWER}[${REPLACED}] {
+      height: 0 !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+      visibility: hidden !important;
+    }
     .${THUMBS} {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 16px;
+      background: var(--bgColor-muted, #f6f8fa);
+    }
+    .${THUMBS}[${NATIVE}] { padding: 8px; }
+    .${THUMBS}[${NATIVE}] .ghz-versions { display: none; }
+    .ghz-versions {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 16px;
-      padding: 16px;
-      background: var(--bgColor-muted, #f6f8fa);
+      max-width: 100%;
+    }
+    .ghz-version {
+      margin: 0;
+      max-width: 100%;
+      text-align: center;
+      color: var(--fgColor-muted, #59636e);
+      font-size: 12px;
     }
     .${THUMB} {
       display: block;
@@ -83,15 +106,17 @@
   document.documentElement.appendChild(preview);
 
   // ---------- Thumbnails ----------
-  // The raw addresses of the images a viewer shows (one, or before and after), hex-encoded; with a token on private
-  // repositories
+  // The raw addresses of the images a viewer shows, hex-encoded, with a token on private repositories: enc_url for an
+  // added or deleted image, enc_url1 (before) and enc_url2 (after) for a changed one
   function imageUrls(frame) {
     const urls = [];
     try {
-      for (const [key, value] of new URL(frame.src).searchParams) {
-        if (!key.startsWith('enc_url') || !/^(?:[\da-f]{2})+$/i.test(value)) continue;
+      const params = [...new URL(frame.src).searchParams].filter(([key]) => /^enc_url\d*$/.test(key)).sort();
+      for (const [, value] of params) {
+        if (!/^(?:[\da-f]{2})+$/i.test(value)) return [];
         const url = decodeURIComponent(value.replace(/../g, '%$&'));
-        if (url.startsWith('https://')) urls.push(url);
+        if (!url.startsWith('https://')) return [];
+        urls.push(url);
       }
     } catch {
       return [];
@@ -99,30 +124,73 @@
     return urls;
   }
 
+  function fileName(url) {
+    try {
+      return decodeURIComponent(new URL(url).pathname.split('/').pop());
+    } catch {
+      return 'the file';
+    }
+  }
+
+  // The viewer follows its thumbnails; GitHub can draw it again
+  const viewerOf = (strip) => (strip.nextElementSibling?.matches(VIEWER) ? strip.nextElementSibling : null);
+
+  // Thumbnails shown, or GitHub's viewer
+  function showNative(strip, button, native) {
+    strip.toggleAttribute(NATIVE, native);
+    viewerOf(strip)?.toggleAttribute(REPLACED, !native);
+    button.textContent = native ? 'Show thumbnails' : 'Compare in GitHub’s viewer';
+  }
+
   function replace(viewer, frame, urls) {
     const strip = document.createElement('div');
     strip.className = THUMBS;
     strip.dataset.ghzFor = frame.src;
-    for (const url of urls) {
+    const versions = document.createElement('div');
+    versions.className = 'ghz-versions';
+    strip.appendChild(versions);
+    // Before and after, as GitHub's viewer orders them
+    const labels = urls.length === 2 ? ['Before', 'After'] : [''];
+    urls.forEach((url, i) => {
+      const version = document.createElement('figure');
+      version.className = 'ghz-version';
       const link = document.createElement('a');
       link.href = url;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
+      link.setAttribute('aria-label', `Open ${labels[i].toLowerCase() || 'the'} image of ${fileName(url)}`);
       const img = document.createElement('img');
       img.className = THUMB;
       img.alt = '';
       img.src = url;
       // Back to GitHub's viewer, for good
       img.addEventListener('error', () => {
-        viewer.dataset.ghzFailed = frame.src;
-        viewer.removeAttribute(REPLACED);
+        const current = viewerOf(strip);
+        if (current) {
+          current.dataset.ghzFailed = frame.src;
+          current.removeAttribute(REPLACED);
+        }
         strip.remove();
       });
       link.appendChild(img);
-      strip.appendChild(link);
-    }
+      version.appendChild(link);
+      if (labels[i]) {
+        const caption = document.createElement('figcaption');
+        caption.textContent = labels[i];
+        version.appendChild(caption);
+      }
+      versions.appendChild(version);
+    });
     viewer.before(strip);
     viewer.setAttribute(REPLACED, '');
+    if (urls.length < 2) return;
+    // A changed image: GitHub's viewer compares the two (2-up, Swipe, Onion Skin)
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn btn-sm';
+    button.addEventListener('click', () => showNative(strip, button, !strip.hasAttribute(NATIVE)));
+    strip.appendChild(button);
+    showNative(strip, button, false);
   }
 
   function run() {
@@ -130,9 +198,9 @@
       const viewer = frame.closest(VIEWER);
       if (viewer.dataset.ghzFailed === frame.src) continue;
       const strip = viewer.previousElementSibling?.classList.contains(THUMBS) ? viewer.previousElementSibling : null;
-      // A viewer drawn again by GitHub keeps its thumbnails
+      // A viewer drawn again by GitHub keeps its thumbnails, or stays shown
       if (strip?.dataset.ghzFor === frame.src) {
-        viewer.setAttribute(REPLACED, '');
+        viewer.toggleAttribute(REPLACED, !strip.hasAttribute(NATIVE));
         continue;
       }
       strip?.remove();
