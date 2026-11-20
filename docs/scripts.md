@@ -100,7 +100,7 @@ window: at its own size, at most as large as the window, and only when that is
 clearly bigger than on the page. It shows after 300 ms of hover (`DELAY_MS`)
 and closes when the pointer leaves the picture, on a click or with Escape;
 clicking a thumbnail opens the image in a new tab. Where a thumbnail cannot
-load, GitHub's viewer comes back. It is not published on Greasy Fork yet.
+load, GitHub's viewer comes back.
 
 ### [`github/readme-tab.user.js`](../userscripts/github/readme-tab.user.js)
 

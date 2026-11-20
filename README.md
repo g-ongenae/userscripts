@@ -29,7 +29,7 @@ higher `@version`.
 | GitHub | [Hide repositories from notifications](https://greasyfork.org/en/scripts/604909-github-hide-repositories-from-notifications) — a **Hide** button per repository | [Install](https://update.greasyfork.org/scripts/604909.user.js) |
 | GitHub | [Hide bots on pull requests](https://greasyfork.org/en/scripts/604910-github-hide-bots-on-pull-requests) — hide bot and AI comments, resolved threads and events | [Install](https://update.greasyfork.org/scripts/604910.user.js) |
 | GitHub | [README tab](https://greasyfork.org/en/scripts/605019-github-readme-tab) — the README in its own tab, Code shows the files only | [Install](https://update.greasyfork.org/scripts/605019.user.js) |
-| GitHub | Zoom pull request images — image files as thumbnails, hover a picture to see it bigger | [Install](https://raw.githubusercontent.com/g-ongenae/userscripts/main/userscripts/github/pr-image-zoom.user.js) ² |
+| GitHub | [Zoom pull request images](https://greasyfork.org/en/scripts/606351-github-zoom-pull-request-images) — image files as thumbnails, hover a picture to see it bigger | [Install](https://update.greasyfork.org/scripts/606351.user.js) |
 | Google Meet | [Float call controls](https://greasyfork.org/en/scripts/604911-google-meet-float-call-controls) — videos take the whole window | [Install](https://update.greasyfork.org/scripts/604911.user.js) |
 | Google Meet | [Keyboard shortcuts](https://greasyfork.org/en/scripts/604912-google-meet-keyboard-shortcuts) — chat, mute the call, layouts, reactions… | [Install](https://update.greasyfork.org/scripts/604912.user.js) |
 | Google Slides | [Declutter the editor](https://greasyfork.org/en/scripts/604913-google-slides-declutter-the-editor) — fold the insert rail, close the AI nudge | [Install](https://update.greasyfork.org/scripts/604913.user.js) |
@@ -42,15 +42,13 @@ higher `@version`.
 | Slack | [Fold sidebar](https://greasyfork.org/en/scripts/604918-slack-fold-sidebar) — a button folding the sidebar | [Install](https://update.greasyfork.org/scripts/604918.user.js) |
 | Slack | [Upload shortcut](https://greasyfork.org/en/scripts/604919-slack-upload-shortcut) — Cmd/Ctrl+U opens the file picker | [Install](https://update.greasyfork.org/scripts/604919.user.js) |
 | Twitch | [Followed channels on the home page](https://greasyfork.org/en/scripts/604920-twitch-followed-channels-on-the-home-page) — no carousel, no recommendations | [Install](https://update.greasyfork.org/scripts/604920.user.js) |
-| YouTube | Comment icon buttons — translate and read more as icons next to Reply | [Install](https://raw.githubusercontent.com/g-ongenae/userscripts/main/userscripts/youtube/comment-buttons.user.js) ² |
+| YouTube | [Comment icon buttons](https://greasyfork.org/en/scripts/606338-youtube-comment-icon-buttons) — translate and read more as icons next to Reply | [Install](https://update.greasyfork.org/scripts/606338.user.js) |
 | YouTube | [Fold related videos](https://greasyfork.org/en/scripts/604921-youtube-fold-related-videos) — the video takes the right column's space | [Install](https://update.greasyfork.org/scripts/604921.user.js) |
-| YouTube | Keyboard shortcuts — move between comments, reply, show replies | [Install](https://raw.githubusercontent.com/g-ongenae/userscripts/main/userscripts/youtube/keyboard.user.js) ² |
+| YouTube | [Keyboard shortcuts](https://greasyfork.org/en/scripts/606350-youtube-keyboard-shortcuts) — move between comments, reply, show replies | [Install](https://update.greasyfork.org/scripts/606350.user.js) |
 | YouTube | [Subscriptions on the home page](https://greasyfork.org/en/scripts/604922-youtube-subscriptions-on-the-home-page) — your channels instead of an empty feed | [Install](https://update.greasyfork.org/scripts/604922.user.js) |
 
 ¹ Not on Greasy Fork: a rewrite of [Celuni's script](https://greasyfork.org/scripts/397171),
 installed and updated from this repository.
-
-² Not on Greasy Fork yet: installed and updated from this repository.
 
 What each script does, in detail, and the settings at the top of some of them:
 [docs/scripts.md](docs/scripts.md).
