@@ -2,8 +2,8 @@
 // @name         GitHub — Hide bots on pull requests
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.1.2
-// @description  Adds a "Hide bots" button to pull request conversations: it hides the comments and reviews of bots and AI reviewers (except SonarCloud, Socket and algoanbot), the replies written by Claude (Co-Authored-By: Claude … noreply@anthropic.com or 🤖 Generated with Claude Code), the @coderabbitai review commands, the resolved threads and the timeline events, leaving the description, the commits, the human comments and the linked issues and pull requests. Works on the Overview preview (the button sits left of All / Unresolved / Mine) and on the classic conversation (in the page header). The choice is remembered.
+// @version      1.1.3
+// @description  Adds a "Hide bots" button to pull request conversations: it hides the comments and reviews of bots and AI reviewers (except SonarCloud, Socket and algoanbot), the replies written by Claude (Co-Authored-By: Claude … noreply@anthropic.com or 🤖 Generated with Claude Code), the @claude review and @coderabbitai review commands, the resolved threads and the timeline events, leaving the description, the commits, the human comments and the linked issues and pull requests. Works on the Overview preview (the button sits left of All / Unresolved / Mine) and on the classic conversation (in the page header). The choice is remembered.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/github/pr-hide-bots.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues
@@ -24,8 +24,8 @@
   // Signatures of the comments Claude posts on behalf of a developer: the co-author trailer or the
   // "🤖 Generated with Claude Code" footer (its link is gone from the rendered text). Never applied to the description.
   const AUTO_REPLY = /Co-Authored-By:[^\n]*noreply@anthropic\.com|Generated with \[?Claude Code\b/i;
-  // Comments asking CodeRabbit for a review: "@coderabbitai review" or "@coderabbitai full review"
-  const BOT_COMMAND = /@coderabbitai\s+(full\s+)?review\b/i;
+  // Comments asking Claude or CodeRabbit for a review
+  const BOT_COMMAND = /@(?:claude\s+|coderabbitai\s+(?:full\s+)?)review\b/i;
   // Timeline events (labels, review requests, draft/ready…) are hidden, except links to other issues
   // and pull requests and these kinds,
   // by the prefix of their data-gid: merged, closed, reopened
@@ -238,7 +238,7 @@
     btn.type = 'button';
     btn.className = 'Button Button--secondary Button--medium';
     btn.title =
-      'Hide the bot and AI comments, the replies written by Claude, the @coderabbitai review commands, the resolved threads and the timeline events';
+      'Hide the bot and AI comments, the replies written by Claude, the @claude review and @coderabbitai review commands, the resolved threads and the timeline events';
     btn.addEventListener('click', () => {
       on = !on;
       localStorage.setItem(KEY, on ? '1' : '0');

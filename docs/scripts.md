@@ -80,13 +80,14 @@ changes…) and hides the replies Claude wrote.
 It hides the comments and reviews of bots and AI reviewers (Copilot,
 CodeRabbit, Claude…, but not SonarCloud, Socket and algoanbot), the replies
 posted with a `Co-Authored-By: Claude … <noreply@anthropic.com>` signature or a
-`🤖 Generated with Claude Code` footer, the `@coderabbitai review` (or
-`full review`) commands, the resolved threads and the timeline events (labels,
-review requests, draft/ready…; the Overview moves them to the sidebar's
-Activity). It leaves the description, the commits, the human comments and
-reviews, the linked or mentioning issues and pull requests, and the merge. A
-thread a human answered stays, with the comment it answers. The button shows
-how many items are hidden, and the choice is remembered.
+`🤖 Generated with Claude Code` footer, the `@claude review`,
+`@coderabbitai review` and `@coderabbitai full review` commands, the resolved
+threads and the timeline events (labels, review requests, draft/ready…; the
+Overview moves them to the sidebar's Activity). It leaves the description,
+the commits, the human comments and reviews, the linked or mentioning issues
+and pull requests, and the merge. A thread a human answered stays, with the
+comment it answers. The button shows how many items are hidden, and the choice
+is remembered.
 
 ### [`github/pr-image-zoom.user.js`](../userscripts/github/pr-image-zoom.user.js)
 
