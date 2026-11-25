@@ -183,10 +183,12 @@ Drives Hacker News from the keyboard:
 
 ### [`linkedin/compose.user.js`](../userscripts/linkedin/compose.user.js)
 
-Makes LinkedIn's **Start a post** dialog fill the window; adds **B**, **I** and
-**S** buttons (and **Cmd/Ctrl+B**, **Cmd/Ctrl+I**, **Cmd/Ctrl+Shift+X**, which
-also work in comments) that toggle bold, italic or strikethrough on the
-selection with Unicode letters and marks, as posts are plain text; shows
+Makes LinkedIn's **Start a post** dialog fill the window; hides the
+**Proofread** (Premium) button; adds **B**, **I** and **S** buttons (and
+**Cmd/Ctrl+B**, **Cmd/Ctrl+I**, **Cmd/Ctrl+Shift+X**, which also work in
+comments) that toggle bold, italic or strikethrough on the selection with
+Unicode letters and marks, as posts are plain text, leaving out **B** when
+LinkedIn's composer already has its own bold button; shows
 attached images as a row of thumbnails at the bottom; and counts the words and
 characters of the post against the 3,000 characters limit. Unicode bold,
 italic and struck-through letters are poorly read by screen readers and are

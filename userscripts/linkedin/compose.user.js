@@ -2,8 +2,8 @@
 // @name         LinkedIn — Better post composer
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.4.2
-// @description  Makes the "Start a post" dialog fill the window; adds Bold, Italic and Strikethrough buttons (Cmd/Ctrl+B, Cmd/Ctrl+I, Cmd/Ctrl+Shift+X, which also work in comments) that restyle the selection with Unicode letters and marks; shows attached images as a row of thumbnails at the bottom; counts words and characters against the 3,000 characters limit. Unicode bold, italic and struck-through letters are poorly read by screen readers and are not found by LinkedIn's search.
+// @version      1.5.0
+// @description  Makes the "Start a post" dialog fill the window; hides the Proofread (Premium) button; adds Bold, Italic and Strikethrough buttons (Cmd/Ctrl+B, Cmd/Ctrl+I, Cmd/Ctrl+Shift+X, which also work in comments) that restyle the selection with Unicode letters and marks, the Bold one only when LinkedIn shows none; shows attached images as a row of thumbnails at the bottom; counts words and characters against the 3,000 characters limit. Unicode bold, italic and struck-through letters are poorly read by screen readers and are not found by LinkedIn's search.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/linkedin/compose.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues
@@ -40,6 +40,11 @@
   const FLAT = 'data-lkp-flat'; // wrapper of LinkedIn's image grid, flattened into the row
   const THUMB = 'data-lkp-thumb'; // one image
   const FIT = 'data-lkp-fit'; // wrappers of the row, shrunk to it
+  const SPACER = 'data-lkp-spacer'; // empty box sharing a grid cell of the chain, sized by aspect ratio
+  // LinkedIn's own Bold button, which some versions of the composer have: ours is then hidden.
+  const NATIVE_BOLD = 'svg[id^="text-bold"]';
+  // The Proofread button, a Premium upsell.
+  const PROOFREAD = '#FeedShareBoxRewriteWithAIPremiumUpsell, [componentkey="FeedShareBoxRewriteWithAIPremiumUpsell"]';
 
   // ---------- Styles ----------
   const style = document.createElement('style');
@@ -51,9 +56,13 @@
       height: calc(100vh - 2 * ${DIALOG_MARGIN}) !important;
       max-height: none !important;
     }
+    dialog[${DIALOG}] :is(${PROOFREAD}) { display: none !important; }
     [${AS_FLEX}] { display: flex !important; flex-direction: column !important; }
+    /* LinkedIn caps some boxes of the chain (64rem): the dialog is taller. */
+    [${GROW}] { max-height: none !important; }
     [${GROW}="col"] { flex-grow: 1 !important; }
     [${GROW}="row"], [${GROW}="grid"] { align-self: stretch !important; height: auto !important; }
+    [${SPACER}]:empty { display: none !important; }
     [${ROW}] {
       display: flex !important; flex-flow: row wrap !important; gap: 4px !important;
       width: auto !important; height: auto !important; aspect-ratio: auto !important;
@@ -72,6 +81,7 @@
       background: transparent; color: inherit; cursor: pointer;
       font: 20px/1 Georgia, serif;
     }
+    [${FORMAT}] button[hidden] { display: none; }
     [${FORMAT}] button:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
     [${FORMAT}] button[data-style="bold"] { font-weight: 700; }
     [${FORMAT}] button[data-style="italic"] { font-style: italic; }
@@ -269,6 +279,12 @@
           ? 'row'
           : 'col';
       el.setAttribute(GROW, kind);
+      // An empty box in the same grid cell (an aspect-ratio placeholder) would keep the cell
+      // taller than the dialog in a short window, pushing the footer out of sight.
+      if (kind === 'grid') {
+        for (const sibling of p.children)
+          if (sibling !== el && sibling.matches(':empty')) sibling.setAttribute(SPACER, '');
+      }
     }
   };
 
@@ -355,6 +371,8 @@
         }
         updateCounter(editor);
       }
+      const bold = dialog.querySelector(`[${FORMAT}] button[data-style="bold"]`);
+      if (bold) bold.hidden = !!dialog.querySelector(NATIVE_BOLD);
 
       if (!watched.has(dialog)) {
         watched.add(dialog);
