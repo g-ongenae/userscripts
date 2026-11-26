@@ -197,6 +197,20 @@ Reviews listing cards on Jinka's web app. The selected card has an outline.
 | **Shift+F** | go to **Favoris** |
 | **?** / **Esc** | open the shortcut guide with **?**, close it with **?** or **Esc** |
 
+### [`jinka/transport-map.user.js`](../userscripts/jinka/transport-map.user.js)
+
+Open **Carte → Transports** to toggle Métro, RER, Transilien and tram lines,
+motorways and the Périphérique. Hover over or click a listing pin for the walk
+to a station, the transit trip to Châtelet–Les Halles and the drive to a motorway
+entrance. Add a PRIM API token in **Transports** for the in-map transit estimate.
+
+Ouvrez **Carte → Transports** pour afficher ou masquer les lignes de métro,
+de RER, de Transilien et de tramway, les autoroutes et le périphérique. Survolez
+ou cliquez sur une annonce pour estimer la marche jusqu’à une station, le trajet
+en transports jusqu’à Châtelet–Les Halles et l’accès à une autoroute en voiture.
+Ajoutez un jeton API PRIM dans **Transports** pour obtenir l’estimation du trajet
+en transports directement sur la carte.
+
 ## LinkedIn
 
 ### [`linkedin/compose.user.js`](../userscripts/linkedin/compose.user.js)
