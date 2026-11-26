@@ -2,7 +2,7 @@
 
 Userscripts that declutter and add keyboard shortcuts to the sites I use every
 day: GitHub, Google Meet and Slides, LinkedIn, Slack, YouTube, Twitch, Reddit,
-Hacker News and Demonic Scans.
+Hacker News, Demonic Scans and Jinka.
 
 Each script is a single file with no dependencies and `@grant none`. They are
 published on [Greasy Fork](https://greasyfork.org/en/users/1663163-guillaume-ongenae).
@@ -15,8 +15,7 @@ published on [Greasy Fork](https://greasyfork.org/en/users/1663163-guillaume-ong
 2. Click a script's **Install** link below. The manager shows the script's
    header and asks you to confirm.
 
-Installed scripts update from Greasy Fork: the manager checks there for a
-higher `@version`.
+The manager checks each script’s source for a higher `@version`.
 
 | Website | Script | Install |
 | --- | --- | --- |
@@ -34,6 +33,7 @@ higher `@version`.
 | Google Meet | [Keyboard shortcuts](https://greasyfork.org/en/scripts/604912-google-meet-keyboard-shortcuts) — chat, mute the call, layouts, reactions… | [Install](https://update.greasyfork.org/scripts/604912.user.js) |
 | Google Slides | [Declutter the editor](https://greasyfork.org/en/scripts/604913-google-slides-declutter-the-editor) — fold the insert rail, close the AI nudge | [Install](https://update.greasyfork.org/scripts/604913.user.js) |
 | Hacker News | [Keyboard shortcuts](https://greasyfork.org/en/scripts/605852-hacker-news-keyboard-shortcuts) — move, open, fold from the keyboard | [Install](https://update.greasyfork.org/scripts/605852.user.js) |
+| Jinka | [Keyboard shortcuts](docs/scripts.md#jinka) — browse listings and photos, toggle favorites, and change results pages | [Install](https://raw.githubusercontent.com/g-ongenae/userscripts/main/userscripts/jinka/keyboard.user.js) ² |
 | LinkedIn | [Better post composer](https://greasyfork.org/en/scripts/604914-linkedin-better-post-composer) — full-window composer, bold / italic / strikethrough | [Install](https://update.greasyfork.org/scripts/604914.user.js) |
 | LinkedIn | [Declutter & wide feed](https://greasyfork.org/en/scripts/604915-linkedin-declutter-wide-feed) — hide upsells and side columns, widen the feed | [Install](https://update.greasyfork.org/scripts/604915.user.js) |
 | LinkedIn | [Keyboard shortcuts](https://greasyfork.org/en/scripts/604916-linkedin-keyboard-shortcuts) — move between posts, react, comment, repost… | [Install](https://update.greasyfork.org/scripts/604916.user.js) |
@@ -49,6 +49,8 @@ higher `@version`.
 
 ¹ Not on Greasy Fork: a rewrite of [Celuni's script](https://greasyfork.org/scripts/397171),
 installed and updated from this repository.
+
+² Installed and updated from this repository.
 
 What each script does, in detail, and the settings at the top of some of them:
 [docs/scripts.md](docs/scripts.md).
