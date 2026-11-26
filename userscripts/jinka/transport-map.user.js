@@ -2,9 +2,9 @@
 // @name         Jinka — Transports et autoroutes
 // @namespace    https://github.com/g-ongenae/userscripts
 // @author       g-ongenae
-// @version      1.1.0
-// @description  Toggle transit lines and motorways, estimate travel times, and export a shortlist of Jinka listings filtered by price and travel time.
-// @description:fr Affichez les lignes de transport et les autoroutes, estimez les trajets et exportez une sélection d’annonces Jinka filtrées par prix et temps de trajet.
+// @version      1.2.0
+// @description  Toggle transit lines and motorways, estimate travel times, and export a shortlist of Jinka listings filtered by price, floor area, and travel time.
+// @description:fr Affichez les lignes de transport et les autoroutes, estimez les trajets et exportez une sélection d’annonces Jinka filtrées par prix, superficie et temps de trajet.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/jinka/transport-map.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues
@@ -44,9 +44,10 @@
   const ROAD_COLOR = '#d65819';
   const FILTERS = {
     price: { label: 'Prix max. (€)', initial: null },
-    walk: { label: 'Marche vers une station (min)', initial: 12 },
-    transit: { label: 'Transports vers Châtelet (min)', initial: 40 },
-    drive: { label: 'Voiture vers une autoroute (min)', initial: 10 },
+    areaM2: { label: 'Surface minimale (m²)', initial: null, step: 'any' },
+    walk: { label: 'Station à pied (minutes max.)', initial: 12 },
+    transit: { label: 'Châtelet en transports (minutes max.)', initial: 40 },
+    drive: { label: 'Autoroute en voiture (minutes max.)', initial: 10 },
   };
   const FILTER_RESULTS = { pass: 'Retenues', unknown: 'À vérifier', fail: 'Écartées' };
   const prefs = GM_getValue('layers', {});
@@ -70,6 +71,7 @@
   const covers = (a, b) => inside(b.slice(0, 2), a) && inside(b.slice(2), a);
   const overlapsRegion = (bounds) => intersects(bounds, COVERAGE);
   const unavailable = (text) => ({ seconds: null, text });
+  const floorArea = (value) => (Number.isFinite(value) && value > 0 ? value : null);
 
   function estimateText({ seconds, text }, exact = false) {
     if (seconds === null) return text;
@@ -471,15 +473,16 @@
       const id = url.pathname.match(/^\/ad\/([\w-]+)\/?$/)?.[1];
       if (url.origin !== location.origin || !id) continue;
       let fiber = reactFiber(anchor);
-      let description = null;
+      const card = cards.get(id) ?? { url: url.href, description: null, areaM2: null };
       for (let depth = 0; fiber && depth < 12; depth++, fiber = fiber.return) {
         const props = fiber.memoizedProps;
         const data = props?.alert_result ?? props?.ad;
-        if (data?.uuid !== id || typeof data.description !== 'string') continue;
-        description = data.description.trim() || null;
-        if (description) break;
+        if (data?.uuid !== id) continue;
+        card.areaM2 ??= floorArea(data.area);
+        if (typeof data.description === 'string') card.description ??= data.description.trim() || null;
+        if (card.areaM2 !== null && card.description) break;
       }
-      if (!cards.has(id) || description) cards.set(id, { url: url.href, description });
+      cards.set(id, card);
     }
     return cards;
   }
@@ -503,6 +506,7 @@
         listings.set(id, {
           point,
           price: Number.isFinite(marker.rent) && marker.rent > 0 ? marker.rent : null,
+          areaM2: floorArea(marker.area) ?? card?.areaM2 ?? null,
           url: card?.url ?? url.href,
           description: card?.description ?? null,
         });
@@ -518,7 +522,7 @@
       const priceLabel = marker.textContent.match(PRICE)?.[0].trim() ?? null;
       const priceText = priceLabel?.replace(/[\s€]/g, '').replace(',', '.');
       const price = /^\d+(?:\.\d{1,2})?$/.test(priceText) ? Number(priceText) : null;
-      listings.push({ point, price, priceLabel, url: null, description: null });
+      listings.push({ point, price, priceLabel, areaM2: null, url: null, description: null });
     }
     return { source: 'rendered_map_pins', listings };
   }
@@ -526,14 +530,14 @@
   async function assessListing(listing, limits, estimates, active) {
     const { point, ...details } = listing;
     const record = { ...details, status: 'pass', checks: {} };
-    // Check price first, then walk and motorway access, before requesting a PRIM itinerary.
-    for (const key of ['price', 'walk', 'drive', 'transit']) {
+    // Check listing details first, then walk and motorway access, before requesting a PRIM itinerary.
+    for (const key of ['price', 'areaM2', 'walk', 'drive', 'transit']) {
       if (limits[key] === null) continue;
       if (!active()) break;
-      if (key === 'price') {
-        record.checks.price = {
-          status: details.price === null ? 'unknown' : details.price <= limits.price ? 'pass' : 'fail',
-        };
+      if (key === 'price' || key === 'areaM2') {
+        const value = details[key];
+        const meetsLimit = key === 'price' ? value <= limits[key] : value >= limits[key];
+        record.checks[key] = { status: value === null ? 'unknown' : meetsLimit ? 'pass' : 'fail' };
       } else {
         const estimate = inside(point, COVERAGE)
           ? await estimates[key](point, active)
@@ -574,11 +578,12 @@
     const form = element('form', '', 'shortlist-form');
     const saved = GM_getValue('shortlist-limits', {});
     const inputs = Object.fromEntries(
-      Object.entries(FILTERS).map(([key, { label, initial }]) => {
+      Object.entries(FILTERS).map(([key, { label, initial, step }]) => {
         const field = element('label', label);
         const input = element('input');
         input.type = 'number';
         input.min = '1';
+        if (step) input.step = step;
         input.value = (Object.hasOwn(saved, key) ? saved[key] : initial) ?? '';
         field.append(input);
         form.append(field);
@@ -1077,6 +1082,7 @@
       const missing = {
         links: candidates.filter((item) => !item.url).length,
         prices: candidates.filter((item) => item.price === null).length,
+        areas: candidates.filter((item) => item.areaM2 === null).length,
         descriptions: candidates.filter((item) => !item.description).length,
       };
       const counts = Object.fromEntries(Object.entries(current).map(([key, records]) => [key, records.length]));
@@ -1087,6 +1093,7 @@
           evaluatedAt: new Date().toISOString(),
           transitDestination: 'Châtelet–Les Halles',
           maxPriceEUR: limits.price,
+          minAreaM2: limits.areaM2,
           maxMinutes: { walk: limits.walk, transit: limits.transit, drive: limits.drive },
           totals: { evaluated: listings.length, ...counts },
           missing,
@@ -1103,11 +1110,16 @@
           const list = element('ul');
           for (const record of current[key]) {
             const price = record.price === null ? record.priceLabel : priceFormat.format(record.price);
-            const heading = price || 'Prix inconnu';
+            const area = record.areaM2 === null ? '' : `${record.areaM2.toLocaleString('fr-FR')} m²`;
+            const heading = [price || 'Prix inconnu', area].filter(Boolean).join(' · ');
             const item = element('li');
             item.append(record.url ? link(heading, record.url) : heading);
             const notes = Object.entries(record.checks).map(([criterion, check]) => {
               if (criterion === 'price') return check.status === 'fail' ? 'Prix au-dessus du seuil' : '';
+              if (criterion === 'areaM2') {
+                if (check.status === 'fail') return 'Surface sous le seuil';
+                return check.status === 'unknown' ? 'Surface inconnue' : '';
+              }
               const text = estimateText(check, true);
               return check.status === 'fail' ? `${text} (au-dessus du seuil)` : text;
             });
@@ -1121,7 +1133,7 @@
       }
       shortlist.status.textContent =
         `${listings.length} évaluées. Dans la shortlist, données manquantes · ` +
-        `${missing.links} lien(s), ${missing.prices} prix, ${missing.descriptions} description(s).`;
+        `${missing.links} lien(s), ${missing.prices} prix, ${missing.areas} surface(s), ${missing.descriptions} description(s).`;
       batch = null;
       shortlist.start.disabled = shortlist.copy.disabled = false;
       shortlist.cancel.disabled = true;
