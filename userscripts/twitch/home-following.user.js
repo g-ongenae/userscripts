@@ -2,8 +2,9 @@
 // @name         Twitch — Followed channels on the home page
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.1.3
+// @version      1.1.4
 // @description  Replaces the Twitch home page (featured carousel, recommended streams, categories) with the channels you follow: live ones as stream cards, the others as a grid of avatars. The carousel and recommendations are not even fetched, so the carousel's live stream never plays, and the side bar keeps only the followed channels. Also hides the "More options", Prime offers, Bits and Turbo buttons of the top bar, and on channel pages the Bits, upgrade and gift sub buttons, the goals, the chat's goal and leaderboard banner and the Bits, points and bonus buttons.
+// @description:fr Remplace l’accueil de Twitch par les chaînes suivies. Les directs apparaissent en cartes et les autres chaînes en grille d’avatars. Le carrousel et les recommandations ne sont pas chargés et la barre latérale affiche uniquement les chaînes suivies. Masque aussi Plus d’options, Prime, Bits et Turbo en haut. Sur les chaînes, masque les boutons Bits et d’abonnement (offrir ou changer de niveau), les objectifs et, dans le chat, le bandeau des objectifs et du classement, les points et les bonus.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/twitch/home-following.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues

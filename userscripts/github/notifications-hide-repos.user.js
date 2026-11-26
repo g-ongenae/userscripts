@@ -2,8 +2,9 @@
 // @name         GitHub — Hide repositories from notifications
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.1.3
+// @version      1.1.4
 // @description  Adds a "Hide" button to the header of each repository group of the GitHub notifications page: the repository's notifications stay hidden, even after a reload. A crossed-out eye next to the repository in the sidebar shows it again. Filtering on the repository still lists its notifications. Hiding is display-only: hidden notifications still count in the inbox badge.
+// @description:fr Ajoute un bouton « Masquer » à chaque groupe de notifications par dépôt sur GitHub. Le choix est mémorisé et l’œil barré dans la barre latérale permet de réafficher le dépôt. Ses notifications restent accessibles via le filtre du dépôt et comptent toujours dans le badge de la boîte de réception.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/github/notifications-hide-repos.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues

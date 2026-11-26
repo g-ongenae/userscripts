@@ -2,8 +2,9 @@
 // @name         Slack — Declutter
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.1.3
+// @version      1.1.4
 // @description  Hides the "Find a conversation" filter, the Huddles, Later/Saved and Directories entries of the sidebar, and the Help button of the top bar; folds image and file previews in messages by default.
+// @description:fr Masque le filtre « Rechercher une conversation », les entrées Appels d’équipe, Plus tard et Annuaires de la barre latérale, ainsi que le bouton Aide de la barre supérieure. Replie par défaut les aperçus d’images et de fichiers dans les messages.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/slack/declutter.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues

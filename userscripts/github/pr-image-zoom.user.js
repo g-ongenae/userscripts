@@ -2,8 +2,9 @@
 // @name         GitHub — Zoom pull request images
 // @namespace    https://github.com/g-ongenae/userscripts
 // @author       g-ongenae
-// @version      1.0.0
+// @version      1.0.1
 // @description  Shows the image files of pull request diffs as small thumbnails; hovering one, or an image of the description, a comment or a review, shows it bigger in the middle of the window. Escape closes it.
+// @description:fr Affiche les images modifiées dans les pull requests GitHub sous forme de vignettes. Survolez une vignette ou une image dans la description, un commentaire ou une revue pour l’agrandir au centre de la fenêtre. Appuyez sur Échap pour fermer l’image.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/github/pr-image-zoom.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues

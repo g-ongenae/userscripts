@@ -2,8 +2,9 @@
 // @name         Jinka — Keyboard shortcuts
 // @namespace    https://github.com/g-ongenae/userscripts
 // @author       g-ongenae
-// @version      1.0.0
+// @version      1.0.1
 // @description  Review Jinka listings with j / k, open a listing with o, browse its photos with ← / →, toggle its favorite with f, and change result pages with n / p. Press ? for all shortcuts.
+// @description:fr Parcourez les annonces Jinka avec j / k, ouvrez une annonce avec o, faites défiler ses photos avec ← / →, ajoutez-la aux favoris ou retirez-la avec f et changez de page de résultats avec n / p. Appuyez sur ? pour voir tous les raccourcis.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/jinka/keyboard.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues

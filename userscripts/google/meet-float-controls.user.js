@@ -2,8 +2,9 @@
 // @name         Google Meet — Float call controls
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.1.3
+// @version      1.1.4
 // @description  Gives the videos the whole window in a Google Meet call: the tiles stretch to fill it, and the call controls (and the reactions row) either float over the bottom of the video, fading out when the mouse rests, or fold against the side, opening on hover. A button next to the controls switches between docked, floating and side; the choice is remembered. Also hides the Gemini button.
+// @description:fr Agrandit les vidéos pour occuper la fenêtre de l’appel Google Meet. Les commandes et les réactions peuvent flotter en bas et s’effacer quand la souris reste immobile, ou se replier sur le côté et réapparaître au survol. Un bouton permet de choisir entre les modes fixe, flottant et latéral. Le choix est mémorisé. Masque aussi le bouton Gemini.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/google/meet-float-controls.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues
