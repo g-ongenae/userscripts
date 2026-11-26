@@ -2,11 +2,14 @@
 // @name         Jinka — Transports et autoroutes
 // @namespace    https://github.com/g-ongenae/userscripts
 // @author       g-ongenae
-// @version      1.0.0
-// @description  Affichez les lignes de transport et les autoroutes sur la carte Jinka. Estimez les trajets depuis les annonces.
+// @version      1.0.1
+// @description  Toggle transit lines and motorways on the Jinka map. Estimate walking, transit and driving times from listing pins.
+// @description:fr Affichez ou masquez les lignes de transport et les autoroutes sur la carte Jinka. Estimez les temps de trajet à pied, en transports et en voiture depuis les annonces.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/jinka/transport-map.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues
+// @updateURL    https://update.greasyfork.org/scripts/607490.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/607490.user.js
 // @match        https://www.jinka.fr/*
 // @match        https://jinka.fr/*
 // @run-at       document-idle
