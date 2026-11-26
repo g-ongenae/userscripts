@@ -179,6 +179,24 @@ Drives Hacker News from the keyboard:
 | **Esc** | leave the comment box |
 | **?** | list the shortcuts |
 
+## Jinka
+
+### [`jinka/keyboard.user.js`](../userscripts/jinka/keyboard.user.js)
+
+Reviews listing cards on Jinka's web app. The selected card has an outline.
+
+| Key | Action |
+| --- | --- |
+| **J** / **K** | select the next / previous listing |
+| **O** or **Enter** | open the selected listing |
+| **Shift+O** | open the selected listing in a new tab |
+| **←** / **→** | browse the selected listing's photos |
+| **F** | add or remove the selected listing from Favorites |
+| **N** / **P** | go to the next / previous results page |
+| **A** | go to **Ma recherche** (alerts) |
+| **Shift+F** | go to **Favoris** |
+| **?** / **Esc** | open the shortcut guide with **?**, close it with **?** or **Esc** |
+
 ## LinkedIn
 
 ### [`linkedin/compose.user.js`](../userscripts/linkedin/compose.user.js)
