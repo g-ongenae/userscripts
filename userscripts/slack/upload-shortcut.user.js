@@ -2,8 +2,9 @@
 // @name         Slack — Upload shortcut
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.2.2
+// @version      1.2.3
 // @description  Cmd+U (Ctrl+U off macOS) opens the file picker of the message composer, like "Upload from your computer" in its "+" menu. It only fires from a composer or the conversation, not from the search box or other inputs.
+// @description:fr Cmd+U (Ctrl+U hors macOS) ouvre le sélecteur de fichiers du champ de rédaction Slack, comme l’option « Charger depuis votre ordinateur » du menu « + ». Le raccourci fonctionne depuis un champ de rédaction ou la conversation et reste inactif dans la recherche et les autres champs.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/slack/upload-shortcut.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues

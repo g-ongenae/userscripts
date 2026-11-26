@@ -2,8 +2,9 @@
 // @name         GitHub — README tab
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.2.1
+// @version      1.2.2
 // @description  Moves the README of GitHub repositories out of the Code tab into its own "README" tab, first in the repository navigation bar: Code shows the files only, README shows the README (and its License / Code of conduct tabs) instead of the files. The repository home opens on the README tab; the tab is disabled on pages without a README.
+// @description:fr Place le README des dépôts GitHub dans un onglet dédié, en tête de la barre de navigation. L’onglet Code affiche les fichiers et l’onglet README affiche le README avec ses sous-onglets Licence et Code de conduite. L’accueil du dépôt s’ouvre sur README. L’onglet est désactivé sur les pages sans README.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/github/readme-tab.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues

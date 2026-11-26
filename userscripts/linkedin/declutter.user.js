@@ -2,8 +2,9 @@
 // @name         LinkedIn — Declutter & wide feed
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.4.11
+// @version      1.4.12
 // @description  Hides Jobs, For Business, Premium upsells, Groups/Newsletters/Events, the footer and the right rail; widens the feed and single posts and lays out the posts of company and profile pages like the feed; moves the composer to the left column; shows post images beside the text; adds panel buttons folding the left column of the feed and the side column of company and profile pages (folded by default); removes "Show translation" on French/English posts.
+// @description:fr Masque Emplois, Pour les entreprises, les offres Premium, Groupes, Newsletters, Événements, le pied de page et la colonne de droite. Élargit le fil et les publications, reprend cette mise en page sur les profils et pages d’entreprise, déplace l’éditeur à gauche et place les images à côté du texte. Permet de replier la colonne latérale, déjà repliée sur les profils et pages d’entreprise. Masque « Voir la traduction » pour les publications en français ou en anglais.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/linkedin/declutter.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues

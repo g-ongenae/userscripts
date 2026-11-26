@@ -2,8 +2,9 @@
 // @name         Google Meet — Keyboard shortcuts
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.3.2
+// @version      1.3.3
 // @description  Drives a Google Meet call from the keyboard: c opens the chat with the cursor in its message box (Esc leaves it, Cmd/Ctrl+Esc closes the chat), m mutes / unmutes the sound of the call (not your microphone), h hides / shows your own video, v switches to the next layout, f toggles full screen, s the captions, t the translation, p presents your screen, l reacts with a thumbs up, r opens Meet's emoji picker (held: 1 – 9 picks one of Meet's reactions) and ? lists the shortcuts.
+// @description:fr Pilote Google Meet au clavier. c ouvre le chat et place le curseur dans la zone de saisie, Échap en sort et Cmd/Ctrl+Échap ferme le chat. m coupe ou rétablit le son reçu, h masque ou affiche votre vidéo, v change la disposition, f bascule le plein écran, s les sous-titres et t la traduction. p partage l’écran, l envoie un pouce levé, r ouvre le sélecteur d’émojis (maintenez r et appuyez sur 1 à 9 pour réagir) et ? liste les raccourcis.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/google/meet-keyboard.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues

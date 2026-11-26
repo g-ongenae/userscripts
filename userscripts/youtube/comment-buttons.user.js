@@ -2,8 +2,9 @@
 // @name         YouTube — Comment icon buttons
 // @namespace    https://github.com/g-ongenae/userscripts
 // @author       g-ongenae
-// @version      1.0.0
+// @version      1.0.1
 // @description  Turns the "Translate to …" link and the "Read more" / "Show less" buttons of comments into icon buttons next to Reply.
+// @description:fr Remplace le lien « Traduire en… » et les boutons « Lire la suite » et « Afficher moins » des commentaires YouTube par des icônes à côté de « Répondre ».
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/youtube/comment-buttons.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues

@@ -2,8 +2,9 @@
 // @name         YouTube — Subscriptions on the home page
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.0.3
+// @version      1.0.4
 // @description  When the YouTube home feed is empty (watch history off), shows your subscribed channels there as a grid of avatars instead of the "Your watch history is off" box. Channels with new videos come first and carry a dot.
+// @description:fr Lorsque l’accueil YouTube est vide parce que l’historique des vidéos regardées est désactivé, affiche vos abonnements en grille d’avatars à la place de l’encadré sur l’historique. Les chaînes qui ont publié de nouvelles vidéos apparaissent en premier, avec un point.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/youtube/home-subscriptions.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues

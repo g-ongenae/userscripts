@@ -2,8 +2,9 @@
 // @name         GitHub — Hide sidebar sections
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.1.1
+// @version      1.1.2
 // @description  Hides the Projects, Milestone, Development and Notifications sections of the sidebar of pull requests (the Overview preview and the classic conversation) and issues, leaving the reviewers, assignees, labels and participants.
+// @description:fr Masque les sections Projets, Jalons, Développement et Notifications dans la barre latérale des issues et des pull requests GitHub (aperçu et conversation classique). Les personnes chargées de la revue, les personnes assignées, les étiquettes et les participants restent visibles.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/github/hide-sidebar-sections.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues

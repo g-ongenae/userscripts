@@ -2,8 +2,9 @@
 // @name         Reddit — Declutter
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.0.1
+// @version      1.0.2
 // @description  Hides Reddit's sign-up panel on the left, the right column (related posts, community card, footer links), ads, the "more posts" feed under the comments and Google's sign-in prompt; widens the main column and shows the whole text of a post on its own page.
+// @description:fr Masque le panneau d’inscription à gauche de Reddit, la colonne de droite (publications associées, encart de la communauté, liens de pied de page), les publicités, les suggestions sous les commentaires et l’invite de connexion Google. Élargit la colonne principale et affiche le texte intégral d’une publication sur sa page.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/reddit/declutter.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues

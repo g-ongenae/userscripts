@@ -2,8 +2,9 @@
 // @name         Hacker News — Keyboard shortcuts
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.0.1
+// @version      1.0.2
 // @description  Drives Hacker News from the keyboard: j / k (or ↓ / ↑) move between stories or comments, o opens the link in a new tab, d opens the discussion, f folds / unfolds the comment, n goes to the next page, . / t to the top, r reloads, h opens the home page and ? lists the shortcuts.
+// @description:fr Naviguez dans Hacker News au clavier. j / k (ou ↓ / ↑) parcourent les articles et commentaires. o ouvre le lien dans un nouvel onglet, d ouvre la discussion, f replie ou déplie le commentaire, n passe à la page suivante, . / t remonte en haut, r actualise la page, h ouvre l’accueil et ? liste les raccourcis.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/hackernews/keyboard.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues

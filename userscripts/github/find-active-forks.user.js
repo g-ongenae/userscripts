@@ -3,7 +3,8 @@
 // @name         GitHub - Find active Forks button
 // @author       Celuni
 // @description  Adds a button to find active Forks
-// @version      2.1.1
+// @description:fr Ajoute un bouton pour trouver les forks actifs d’un dépôt GitHub.
+// @version      2.1.2
 // @match        https://github.com/*
 // @grant        none
 // @run-at       document-idle

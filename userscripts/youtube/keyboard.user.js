@@ -2,8 +2,9 @@
 // @name         YouTube — Keyboard shortcuts
 // @namespace    https://github.com/g-ongenae/userscripts
 // @author       g-ongenae
-// @version      1.0.0
+// @version      1.0.1
 // @description  Drives YouTube comments from the keyboard, next to YouTube's own shortcuts: n / p move between comments, r replies, e shows / hides the replies, g goes back to the top, h opens the home page and H (Shift+h) lists the shortcuts, YouTube's included.
+// @description:fr Ajoute des raccourcis clavier pour les commentaires YouTube. n permet de passer au commentaire suivant et p au précédent, r répond, e affiche ou masque les réponses, g remonte en haut, h ouvre l’accueil et H (Maj+h) affiche la liste des raccourcis, y compris ceux de YouTube.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/youtube/keyboard.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues
