@@ -2,9 +2,9 @@
 // @name         Jinka — Transports et autoroutes
 // @namespace    https://github.com/g-ongenae/userscripts
 // @author       g-ongenae
-// @version      1.0.1
-// @description  Toggle transit lines and motorways on the Jinka map. Estimate walking, transit and driving times from listing pins.
-// @description:fr Affichez ou masquez les lignes de transport et les autoroutes sur la carte Jinka. Estimez les temps de trajet à pied, en transports et en voiture depuis les annonces.
+// @version      1.1.0
+// @description  Toggle transit lines and motorways, estimate travel times, and export a shortlist of Jinka listings filtered by price and travel time.
+// @description:fr Affichez les lignes de transport et les autoroutes, estimez les trajets et exportez une sélection d’annonces Jinka filtrées par prix et temps de trajet.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/jinka/transport-map.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues
@@ -42,6 +42,13 @@
     other: 'Autres trains et lignes',
   };
   const ROAD_COLOR = '#d65819';
+  const FILTERS = {
+    price: { label: 'Prix max. (€)', initial: null },
+    walk: { label: 'Marche vers une station (min)', initial: 12 },
+    transit: { label: 'Transports vers Châtelet (min)', initial: 40 },
+    drive: { label: 'Voiture vers une autoroute (min)', initial: 10 },
+  };
+  const FILTER_RESULTS = { pass: 'Retenues', unknown: 'À vérifier', fail: 'Écartées' };
   const prefs = GM_getValue('layers', {});
   prefs.modes ??= { metro: true, rer: true, train: true, tram: false, other: false };
   prefs.hidden ??= [];
@@ -62,6 +69,19 @@
   const intersects = (a, b) => a[0] <= b[2] && a[1] <= b[3] && a[2] >= b[0] && a[3] >= b[1];
   const covers = (a, b) => inside(b.slice(0, 2), a) && inside(b.slice(2), a);
   const overlapsRegion = (bounds) => intersects(bounds, COVERAGE);
+  const unavailable = (text) => ({ seconds: null, text });
+
+  function estimateText({ seconds, text }, exact = false) {
+    if (seconds === null) return text;
+    let duration = minutes(seconds);
+    if (exact) {
+      const whole = Math.ceil(seconds);
+      const min = Math.floor(whole / 60);
+      const sec = whole % 60;
+      duration = sec ? `${min} min ${sec} s` : `${min} min`;
+    }
+    return [duration, text].filter(Boolean).join(' · ');
+  }
 
   function request(url, headers = {}) {
     return new Promise((resolve, reject) => {
@@ -357,18 +377,30 @@
           .filter((section) => section.type === 'public_transport')
           .map((section) => section.display_informations?.label)
           .filter(Boolean);
-        return [minutes(trip.duration), [...new Set(labels)].join(' → ')].filter(Boolean).join(' · ');
+        return {
+          seconds: trip.duration,
+          text: [...new Set(labels)].join(' → '),
+        };
       }
-      return 'Aucun itinéraire avec les lignes affichées';
+      return unavailable('Aucun itinéraire avec les lignes affichées');
     } catch (error) {
-      if (error.status === 401 || error.status === 403) return 'Jeton PRIM refusé';
-      if (error.body?.error?.id === 'no_solution') return 'Aucun itinéraire avec les lignes affichées';
-      return 'Calculateur PRIM indisponible';
+      if (error.status === 401 || error.status === 403) return unavailable('Jeton PRIM refusé');
+      if (error.body?.error?.id === 'no_solution') return unavailable('Aucun itinéraire avec les lignes affichées');
+      return unavailable('Calculateur PRIM indisponible');
     }
   }
 
   function liveObject(element) {
     return element?.wrappedJSObject ?? element;
+  }
+
+  function reactFiber(element) {
+    const node = liveObject(element);
+    const key = Object.keys(node).find((name) => name.startsWith('__reactFiber$'));
+    const fiber = node[key];
+    let root = fiber;
+    while (root?.return) root = root.return;
+    return root?.alternate && root.stateNode?.current === root.alternate && fiber.alternate ? fiber.alternate : fiber;
   }
 
   function findMap(container) {
@@ -378,8 +410,7 @@
       typeof map.containerPointToLayerPoint === 'function' &&
       typeof map.eachLayer === 'function' &&
       map.getContainer() === element;
-    const key = Object.keys(element).find((name) => name.startsWith('__reactFiber$'));
-    const host = element[key];
+    const host = reactFiber(container);
     // React Leaflet exposes the map through context. Imperative integrations often keep it in a hook ref.
     for (const fiber of [host, host?.alternate]) {
       for (let child = fiber?.child; child; child = child.sibling) {
@@ -407,6 +438,122 @@
     return Number.isFinite(lat) && Number.isFinite(lng) ? [lng, lat] : null;
   }
 
+  function mapListingProps(container) {
+    // AdMapView receives the original map markers, before Jinka offsets overlapping pins.
+    let fiber = reactFiber(container);
+    for (let depth = 0; fiber && depth < 30; depth++, fiber = fiber.return) {
+      const props = fiber.memoizedProps;
+      if (Array.isArray(props?.markers) && props.markers.some((marker) => typeof marker?.ad_uuid === 'string')) {
+        return props;
+      }
+    }
+    return null;
+  }
+
+  function renderedListingIds(fiber, depth = 0) {
+    // The marker group receives only the pills and dots active in Jinka's map.
+    if (!fiber || depth >= 8) return null;
+    const { pills, dots } = fiber.memoizedProps ?? {};
+    if (Array.isArray(pills) && Array.isArray(dots)) {
+      return new Set([...pills, ...dots].map((marker) => marker?.ad_uuid));
+    }
+    for (let child = fiber.child; child; child = child.sibling) {
+      const ids = renderedListingIds(child, depth + 1);
+      if (ids) return ids;
+    }
+    return null;
+  }
+
+  function listingCards() {
+    const cards = new Map();
+    for (const anchor of document.querySelectorAll('a[href*="/ad/"]')) {
+      const url = new URL(anchor.href, location.origin);
+      const id = url.pathname.match(/^\/ad\/([\w-]+)\/?$/)?.[1];
+      if (url.origin !== location.origin || !id) continue;
+      let fiber = reactFiber(anchor);
+      let description = null;
+      for (let depth = 0; fiber && depth < 12; depth++, fiber = fiber.return) {
+        const props = fiber.memoizedProps;
+        const data = props?.alert_result ?? props?.ad;
+        if (data?.uuid !== id || typeof data.description !== 'string') continue;
+        description = data.description.trim() || null;
+        if (description) break;
+      }
+      if (!cards.has(id) || description) cards.set(id, { url: url.href, description });
+    }
+    return cards;
+  }
+
+  function listingsInView(container, map) {
+    const bounds = mapBounds(map);
+    const props = mapListingProps(container);
+    if (props) {
+      const cards = listingCards();
+      const renderedIds = renderedListingIds(reactFiber(container));
+      const listings = new Map();
+      for (const marker of props.markers) {
+        if (typeof marker?.ad_uuid !== 'string' || !/^[\w-]+$/.test(marker.ad_uuid)) continue;
+        if (renderedIds && !renderedIds.has(marker.ad_uuid)) continue;
+        const point = [marker.lng, marker.lat];
+        if (!point.every(Number.isFinite) || !inside(point, bounds)) continue;
+        const id = marker.ad_uuid;
+        const card = cards.get(id);
+        const url = new URL(`/ad/${id}`, location.origin);
+        if (props.alert_id) url.searchParams.set('alert_id', props.alert_id);
+        listings.set(id, {
+          point,
+          price: Number.isFinite(marker.rent) && marker.rent > 0 ? marker.rent : null,
+          url: card?.url ?? url.href,
+          description: card?.description ?? null,
+        });
+      }
+      return { source: 'jinka_map_listings', listings: [...listings.values()] };
+    }
+
+    // A pin can still be evaluated if Jinka changes the shape of its React props.
+    const listings = [];
+    for (const marker of container.querySelectorAll(PIN)) {
+      const point = pinPoint(map, marker);
+      if (!point || !inside(point, bounds)) continue;
+      const priceLabel = marker.textContent.match(PRICE)?.[0].trim() ?? null;
+      const priceText = priceLabel?.replace(/[\s€]/g, '').replace(',', '.');
+      const price = /^\d+(?:\.\d{1,2})?$/.test(priceText) ? Number(priceText) : null;
+      listings.push({ point, price, priceLabel, url: null, description: null });
+    }
+    return { source: 'rendered_map_pins', listings };
+  }
+
+  async function assessListing(listing, limits, estimates, active) {
+    const { point, ...details } = listing;
+    const record = { ...details, status: 'pass', checks: {} };
+    // Check price first, then walk and motorway access, before requesting a PRIM itinerary.
+    for (const key of ['price', 'walk', 'drive', 'transit']) {
+      if (limits[key] === null) continue;
+      if (!active()) break;
+      if (key === 'price') {
+        record.checks.price = {
+          status: details.price === null ? 'unknown' : details.price <= limits.price ? 'pass' : 'fail',
+        };
+      } else {
+        const estimate = inside(point, COVERAGE)
+          ? await estimates[key](point, active)
+          : unavailable('Hors Île-de-France');
+        const { seconds } = estimate;
+        record.checks[key] = {
+          ...estimate,
+          status: seconds === null ? 'unknown' : seconds <= 60 * limits[key] ? 'pass' : 'fail',
+        };
+      }
+      const { status } = record.checks[key];
+      if (status === 'unknown') record.status = status;
+      if (status === 'fail') {
+        record.status = status;
+        break;
+      }
+    }
+    return record;
+  }
+
   function element(tag, text, className) {
     const node = document.createElement(tag);
     if (text) node.textContent = text;
@@ -422,6 +569,47 @@
     return anchor;
   }
 
+  function makeShortlistPanel() {
+    const section = element('details', '', 'shortlist');
+    const form = element('form', '', 'shortlist-form');
+    const saved = GM_getValue('shortlist-limits', {});
+    const inputs = Object.fromEntries(
+      Object.entries(FILTERS).map(([key, { label, initial }]) => {
+        const field = element('label', label);
+        const input = element('input');
+        input.type = 'number';
+        input.min = '1';
+        input.value = (Object.hasOwn(saved, key) ? saved[key] : initial) ?? '';
+        field.append(input);
+        form.append(field);
+        return [key, input];
+      }),
+    );
+    const actions = element('div', '', 'shortlist-actions');
+    const start = element('button', 'Préfiltrer');
+    const cancel = element('button', 'Annuler');
+    const copy = element('button', 'Copier la shortlist');
+    cancel.type = copy.type = 'button';
+    cancel.disabled = copy.disabled = true;
+    actions.append(start, cancel, copy);
+    form.append(actions);
+    const status = element('p', '', 'status');
+    status.setAttribute('role', 'status');
+    const results = element('div');
+    const clipboard = element('textarea');
+    clipboard.readOnly = clipboard.hidden = true;
+    clipboard.setAttribute('aria-label', 'Shortlist JSON à copier');
+    section.append(
+      element('summary', 'Présélection des annonces'),
+      element('p', 'Vue actuelle de la carte · laissez un seuil vide pour l’ignorer.', 'fine'),
+      form,
+      status,
+      results,
+      clipboard,
+    );
+    return { section, form, inputs, start, cancel, copy, status, results, clipboard };
+  }
+
   function makePanel(container) {
     const host = element('div');
     host.setAttribute('data-jinka-transports', '');
@@ -432,12 +620,12 @@
       'style',
       `
       :host { color:#25223c; font:13px/1.35 system-ui,sans-serif; }
-      details, article {
+      .settings-menu, article {
         position:absolute; pointer-events:auto; background:#fff; color:#25223c;
         border:1px solid #dcdae5; border-radius:10px; box-shadow:0 2px 12px #25223c30;
         max-height:calc(100% - 24px); overflow:auto; box-sizing:border-box;
       }
-      details { inset:11px auto auto 52px; max-width:calc(100% - 110px); z-index:1; }
+      .settings-menu { inset:11px auto auto 52px; max-width:calc(100% - 110px); z-index:1; }
       summary { cursor:pointer; padding:7px 10px; font-weight:700; }
       .settings { width:min(290px, 61vw); padding:0 10px 9px; }
       fieldset { border:0; border-top:1px solid #eeedf2; margin:4px 0 0; padding:6px 0 2px; }
@@ -449,8 +637,11 @@
       input[type=checkbox] { margin:0 2px; accent-color:#7142a2; }
       form { display:flex; flex-wrap:wrap; gap:6px; margin:7px 0; }
       input[type=password] { flex:1; min-width:110px; width:8em; }
-      :is(input[type=password], button) { font:inherit; border:1px solid #c4bdd0; border-radius:5px; padding:3px 6px; }
+      :is(input[type=password], input[type=number], button, textarea) {
+        font:inherit; border:1px solid #c4bdd0; border-radius:5px; padding:3px 6px;
+      }
       button { cursor:pointer; background:#f5effb; color:#312440; }
+      button:disabled { cursor:default; opacity:.6; }
       a { color:#552880; }
       .fine { font-size:11px; color:#595369; }
       .status { color:#70410e; font-size:12px; margin:4px 0; }
@@ -462,15 +653,26 @@
       dt { color:#595369; }
       dd { margin:0; font-weight:600; }
       .close { position:absolute; top:5px; right:7px; padding:0 5px; }
-      details:has(summary:focus-visible), :is(button, a, input):focus-visible { outline:2px solid #7142a2; outline-offset:2px; }
+      .shortlist { border-bottom:1px solid #eeedf2; padding-bottom:4px; }
+      .shortlist summary { padding:4px 0; }
+      .shortlist p { margin:4px 0; }
+      .shortlist-form { display:grid; }
+      .shortlist-form label { justify-content:space-between; }
+      .shortlist-form input { width:6.5em; max-width:40%; box-sizing:border-box; }
+      .shortlist-actions { display:flex; gap:4px; flex-wrap:wrap; }
+      .shortlist ul { margin:2px 0 8px; padding-left:16px; }
+      .shortlist li { margin:3px 0; }
+      .shortlist textarea { width:100%; box-sizing:border-box; }
+      :is(summary, button, a, input, textarea):focus-visible { outline:2px solid #7142a2; outline-offset:2px; }
     `,
     );
-    const settings = element('details');
+    const settings = element('details', '', 'settings-menu');
     settings.append(element('summary', 'Transports'));
     const body = element('div', '', 'settings');
     const status = element('div', '', 'status');
     status.setAttribute('role', 'status');
     const fields = element('div');
+    const shortlist = makeShortlistPanel();
     const roadToggle = element('label', 'Autoroutes, voies rapides et périphérique');
     const highway = element('input');
     highway.type = 'checkbox';
@@ -496,7 +698,7 @@
       ' · ',
       link('Obtenir un jeton PRIM', `${PRIM}/fr/apis/idfm-navitia-general-v2`),
     );
-    body.append(fields, roadToggle, roadChoices, status, form, credits);
+    body.append(shortlist.section, fields, roadToggle, roadChoices, status, form, credits);
     settings.append(body);
     const result = element('article');
     result.hidden = true;
@@ -524,6 +726,7 @@
       host,
       settings,
       fields,
+      shortlist,
       status,
       highway,
       roadChoices,
@@ -690,6 +893,9 @@
     let hoverTimer;
     let selected;
     let revision = 0;
+    const shortlist = panel.shortlist;
+    let batch;
+    let exportText;
 
     function draw() {
       if (frame) return;
@@ -763,14 +969,168 @@
     }
     function changed() {
       GM_setValue('layers', prefs);
+      resetShortlist('Les lignes ou autoroutes ont changé. Relancez le préfiltre.');
       updateRoads();
       if (selected) estimate(selected);
     }
+
+    const estimates = {
+      async walk(point, active) {
+        let data;
+        try {
+          data = await railData();
+        } catch {
+          return unavailable('Stations indisponibles');
+        }
+        if (!active()) return unavailable('Calcul interrompu');
+        if (!data.lines.some(visible)) return unavailable('Affichez une ligne');
+        const enabledStops = data.stops.filter((stop) => visible(stop.line));
+        const stops = closest(point, enabledStops, 3, 12000);
+        const best = await fastestNearby(point, stops, 'pedestrian', active);
+        if (!best) {
+          return unavailable(stops.length ? 'Itinéraire indisponible' : 'Aucune station affichée à proximité');
+        }
+        const linesAtStation = enabledStops
+          .filter((stop) => stop.name === best.name && metres(stop.point, best.point) < 350)
+          .map(({ line }) => `${MODES[line.mode]} ${line.name}`);
+        return {
+          seconds: best.duration,
+          text: `${best.name} (${[...new Set(linesAtStation)].join(', ')})`,
+        };
+      },
+      async transit(point, active) {
+        let data;
+        try {
+          data = await railData();
+        } catch {
+          return unavailable('Lignes indisponibles');
+        }
+        if (!active()) return unavailable('Calcul interrompu');
+        const lines = data.lines.filter(visible);
+        if (!lines.length) return unavailable('Affichez une ligne');
+        if (!token) return unavailable('Ajoutez un jeton PRIM dans Transports');
+        return parisJourney(point, lines);
+      },
+      async drive(point, active) {
+        if (!prefs.highways) return unavailable('Affichez les autoroutes');
+        const nearby = roadBounds([...point, ...point], 0.12, 0.08);
+        try {
+          const data = roadWindow && covers(roadWindow, nearby) ? await roadPromise : await roadData(nearby);
+          if (!active()) return unavailable('Calcul interrompu');
+          const entrances = closest(
+            point,
+            data.entrances.filter((entry) => !prefs.hiddenRoads.includes(entry.name)),
+            4,
+            12000,
+          );
+          const best = await fastestNearby(point, entrances, 'car', active);
+          if (!best) {
+            return unavailable(entrances.length ? 'Itinéraire indisponible' : 'Aucune bretelle à proximité');
+          }
+          return { seconds: best.duration, text: `accès ${best.name}` };
+        } catch {
+          return unavailable('Données routières indisponibles');
+        }
+      },
+    };
+
+    function resetShortlist(message) {
+      if (!batch && !exportText) return;
+      batch = exportText = null;
+      shortlist.start.disabled = false;
+      shortlist.cancel.disabled = shortlist.copy.disabled = true;
+      shortlist.copy.textContent = 'Copier la shortlist';
+      shortlist.clipboard.hidden = true;
+      shortlist.clipboard.value = '';
+      shortlist.results.replaceChildren();
+      shortlist.status.textContent = message;
+    }
+
+    async function prefilter(event) {
+      event.preventDefault();
+      if (batch) return;
+      resetShortlist('');
+      const limits = Object.fromEntries(
+        Object.entries(shortlist.inputs).map(([key, input]) => [key, input.value ? input.valueAsNumber : null]),
+      );
+      GM_setValue('shortlist-limits', limits);
+      const { source, listings } = listingsInView(container, map);
+      if (!listings.length) {
+        shortlist.status.textContent = 'Aucune annonce géolocalisée dans cette vue.';
+        return;
+      }
+
+      const current = { pass: [], unknown: [], fail: [] };
+      const active = () => batch === current && !events.signal.aborted;
+      batch = current;
+      shortlist.start.disabled = true;
+      shortlist.cancel.disabled = false;
+      const priceFormat = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
+      for (const [index, listing] of listings.entries()) {
+        shortlist.status.textContent = `Analyse de la vue · ${index + 1}/${listings.length}`;
+        const result = await assessListing(listing, limits, estimates, active);
+        if (!active()) return;
+        current[result.status].push(result);
+      }
+
+      const candidates = [...current.pass, ...current.unknown];
+      const missing = {
+        links: candidates.filter((item) => !item.url).length,
+        prices: candidates.filter((item) => item.price === null).length,
+        descriptions: candidates.filter((item) => !item.description).length,
+      };
+      const counts = Object.fromEntries(Object.entries(current).map(([key, records]) => [key, records.length]));
+      exportText = JSON.stringify(
+        {
+          source,
+          scope: 'Jinka map viewport at the start of the scan',
+          evaluatedAt: new Date().toISOString(),
+          transitDestination: 'Châtelet–Les Halles',
+          maxPriceEUR: limits.price,
+          maxMinutes: { walk: limits.walk, transit: limits.transit, drive: limits.drive },
+          totals: { evaluated: listings.length, ...counts },
+          missing,
+          listings: candidates,
+        },
+        null,
+        2,
+      );
+
+      for (const [key, label] of Object.entries(FILTER_RESULTS)) {
+        const group = element('details');
+        group.append(element('summary', `${label} (${counts[key]})`));
+        if (counts[key]) {
+          const list = element('ul');
+          for (const record of current[key]) {
+            const price = record.price === null ? record.priceLabel : priceFormat.format(record.price);
+            const heading = price || 'Prix inconnu';
+            const item = element('li');
+            item.append(record.url ? link(heading, record.url) : heading);
+            const notes = Object.entries(record.checks).map(([criterion, check]) => {
+              if (criterion === 'price') return check.status === 'fail' ? 'Prix au-dessus du seuil' : '';
+              const text = estimateText(check, true);
+              return check.status === 'fail' ? `${text} (au-dessus du seuil)` : text;
+            });
+            const text = [...notes, record.url ? '' : 'Lien indisponible'].filter(Boolean).join(' · ');
+            if (text) item.append(element('div', text, 'fine'));
+            list.append(item);
+          }
+          group.append(list);
+        }
+        shortlist.results.append(group);
+      }
+      shortlist.status.textContent =
+        `${listings.length} évaluées. Dans la shortlist, données manquantes · ` +
+        `${missing.links} lien(s), ${missing.prices} prix, ${missing.descriptions} description(s).`;
+      batch = null;
+      shortlist.start.disabled = shortlist.copy.disabled = false;
+      shortlist.cancel.disabled = true;
+    }
+
     async function estimate(selection) {
       selected = selection;
       const { point, label } = selection;
       const current = ++revision;
-      const [walking, transit, driving] = panel.values;
       const active = () => current === revision && !events.signal.aborted;
       const show = (target, text) => {
         if (active()) target.textContent = text;
@@ -789,73 +1149,12 @@
       }
       for (const value of panel.values) show(value, 'Calcul en cours…');
 
-      const walkingAndTransit = async () => {
-        let data;
-        try {
-          data = await railData();
-        } catch {
-          show(walking, 'Stations indisponibles');
-          show(transit, 'Lignes indisponibles');
-          return;
-        }
-        if (!active()) return;
-        const lines = data.lines.filter(visible);
-        if (!lines.length) {
-          show(walking, 'Affichez une ligne');
-          show(transit, 'Affichez une ligne');
-          return;
-        }
-        if (token) {
-          parisJourney(point, lines).then((text) => show(transit, text));
-        } else {
-          show(transit, 'Ajoutez un jeton PRIM dans Transports');
-        }
-
-        const stops = closest(
-          point,
-          data.stops.filter((stop) => visible(stop.line)),
-          3,
-          12000,
-        );
-        const best = await fastestNearby(point, stops, 'pedestrian', active);
-        if (!best) {
-          show(walking, stops.length ? 'Itinéraire indisponible' : 'Aucune station affichée à proximité');
-          return;
-        }
-        const linesAtStation = data.stops
-          .filter((stop) => visible(stop.line) && stop.name === best.name && metres(stop.point, best.point) < 350)
-          .map(({ line }) => `${MODES[line.mode]} ${line.name}`);
-        show(walking, `${minutes(best.duration)} · ${best.name} (${[...new Set(linesAtStation)].join(', ')})`);
-      };
-      const drivingEstimate = async () => {
-        if (!prefs.highways) {
-          show(driving, 'Affichez les autoroutes');
-          return;
-        }
-        const nearby = roadBounds([...point, ...point], 0.12, 0.08);
-        try {
-          const data = roadWindow && covers(roadWindow, nearby) ? await roadPromise : await roadData(nearby);
-          if (!active()) return;
-          const entrances = closest(
-            point,
-            data.entrances.filter((entry) => !prefs.hiddenRoads.includes(entry.name)),
-            4,
-            12000,
-          );
-          const best = await fastestNearby(point, entrances, 'car', active);
-          show(
-            driving,
-            best
-              ? `${minutes(best.duration)} · accès ${best.name}`
-              : entrances.length
-                ? 'Itinéraire indisponible'
-                : 'Aucune bretelle à proximité',
-          );
-        } catch {
-          show(driving, 'Données routières indisponibles');
-        }
-      };
-      await Promise.all([walkingAndTransit(), drivingEstimate()]);
+      await Promise.all(
+        ['walk', 'transit', 'drive'].map(async (key, index) => {
+          const result = await estimates[key](point, active);
+          show(panel.values[index], estimateText(result));
+        }),
+      );
     }
 
     function activate(marker) {
@@ -885,6 +1184,31 @@
     }
 
     panel.close.addEventListener('click', hide, options);
+    shortlist.form.addEventListener('submit', prefilter, options);
+    shortlist.form.addEventListener(
+      'input',
+      () => resetShortlist('Les seuils ont changé. Relancez le préfiltre.'),
+      options,
+    );
+    shortlist.cancel.addEventListener('click', () => resetShortlist('Analyse annulée.'), options);
+    shortlist.copy.addEventListener(
+      'click',
+      async () => {
+        const data = exportText;
+        if (!data) return;
+        try {
+          await navigator.clipboard.writeText(data);
+          if (exportText === data) shortlist.copy.textContent = 'Shortlist copiée';
+        } catch {
+          if (exportText !== data || events.signal.aborted) return;
+          shortlist.clipboard.value = data;
+          shortlist.clipboard.hidden = false;
+          shortlist.clipboard.focus();
+          shortlist.clipboard.select();
+        }
+      },
+      options,
+    );
     panel.highway.addEventListener(
       'change',
       () => {
@@ -900,6 +1224,7 @@
         event.preventDefault();
         token = panel.apiKey.value.trim();
         GM_setValue('prim-token', token);
+        resetShortlist('Le jeton PRIM a changé. Relancez le préfiltre.');
         for (const key of routes.keys()) {
           if (key.startsWith('transit:')) routes.delete(key);
         }
@@ -961,7 +1286,12 @@
     }
     for (const container of document.querySelectorAll('.leaflet-container')) {
       if (mounted.has(container) || !container.getClientRects().length) continue;
-      if (![...container.querySelectorAll(PIN)].some((marker) => PRICE.test(marker.textContent))) continue;
+      if (
+        ![...container.querySelectorAll(PIN)].some((marker) => PRICE.test(marker.textContent)) &&
+        !mapListingProps(container)
+      ) {
+        continue;
+      }
       const map = findMap(container);
       if (!map) continue;
       const destroy = mount(container, map);

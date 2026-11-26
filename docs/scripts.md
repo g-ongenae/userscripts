@@ -204,12 +204,26 @@ motorways and the Périphérique. Hover over or click a listing pin for the walk
 to a station, the transit trip to Châtelet–Les Halles and the drive to a motorway
 entrance. Add a PRIM API token in **Transports** for the in-map transit estimate.
 
+Under **Présélection des annonces**, set a maximum price and travel times.
+Blank fields skip that filter. **Préfiltrer** checks the geolocated listings in
+the current map view and keeps listings with missing estimates under **À vérifier**
+unless another criterion rules them out. **Copier la shortlist** copies the
+matches and listings to check as JSON, with links and descriptions when
+available. Paste it into an agent to rank the candidates.
+
 Ouvrez **Carte → Transports** pour afficher ou masquer les lignes de métro,
 de RER, de Transilien et de tramway, les autoroutes et le périphérique. Survolez
 ou cliquez sur une annonce pour estimer la marche jusqu’à une station, le trajet
 en transports jusqu’à Châtelet–Les Halles et l’accès à une autoroute en voiture.
 Ajoutez un jeton API PRIM dans **Transports** pour obtenir l’estimation du trajet
 en transports directement sur la carte.
+
+Dans **Présélection des annonces**, saisissez un prix et des durées maximales.
+Laissez un champ vide pour ignorer ce critère. **Préfiltrer** vérifie les
+annonces géolocalisées de la vue actuelle. Les annonces avec une estimation
+manquante restent **À vérifier** si aucun autre critère ne les écarte.
+**Copier la shortlist** copie en JSON les annonces retenues et celles à vérifier,
+avec leurs liens et descriptions disponibles, pour les transmettre à un agent.
 
 ## LinkedIn
 
