@@ -204,12 +204,15 @@ motorways and the Périphérique. Hover over or click a listing pin for the walk
 to a station, the transit trip to Châtelet–Les Halles and the drive to a motorway
 entrance. Add a PRIM API token in **Transports** for the in-map transit estimate.
 
-Ouvrez **Carte → Transports** pour afficher ou masquer les lignes de métro,
-de RER, de Transilien et de tramway, les autoroutes et le périphérique. Survolez
-ou cliquez sur une annonce pour estimer la marche jusqu’à une station, le trajet
-en transports jusqu’à Châtelet–Les Halles et l’accès à une autoroute en voiture.
-Ajoutez un jeton API PRIM dans **Transports** pour obtenir l’estimation du trajet
-en transports directement sur la carte.
+Under **Présélection des annonces**, set a maximum price, a minimum floor area,
+and maximum travel times. Blank fields skip that filter. **Préfiltrer** checks
+the geolocated listings in the current map view. A listing with missing data
+for an active filter stays under **À vérifier** unless another criterion rules
+it out. The script reads floor area from loaded listing data. Jinka’s own
+**Surface minimum** search filter also covers listings whose cards have not
+loaded. **Copier la shortlist** copies the matches and listings to check as
+JSON, with floor areas, links and descriptions when available. Paste it into an
+agent to rank the candidates.
 
 ## LinkedIn
 
