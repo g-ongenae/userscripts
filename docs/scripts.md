@@ -51,8 +51,8 @@ is remembered.
 Hides the **Agents** tab of GitHub repository navigation bars, its entry in the
 overflow menu shown on narrow windows, the **Copilot** button (and its
 dropdown) of the page header, the Copilot panel button of the pull request
-header, and the **Ask about this diff** button of each file in the pull request
-diff.
+header, the **Ask about this diff** button of each file in the pull request
+diff, and the **Ask Copilot about this file** button of the file view.
 
 ### [`github/hide-sidebar-sections.user.js`](../userscripts/github/hide-sidebar-sections.user.js)
 

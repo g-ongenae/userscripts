@@ -2,9 +2,9 @@
 // @name         GitHub — Hide the Agents tab
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.4.3
-// @description  Hides the "Agents" tab of the repository navigation bar, its entry in the overflow menu shown on narrow windows, the Copilot button (and its dropdown) of the page header, the Copilot panel button of the pull request header, and the "Ask about this diff" button of each file in the pull request diff.
-// @description:fr Masque l’onglet « Agents » de la navigation du dépôt GitHub, y compris dans le menu affiché quand la fenêtre est étroite. Masque aussi le bouton Copilot et son menu dans l’en-tête de la page, le bouton du panneau Copilot dans l’en-tête des pull requests et le bouton « Ask about this diff » de chaque fichier modifié.
+// @version      1.5.0
+// @description  Hides the "Agents" tab of the repository navigation bar, its entry in the overflow menu shown on narrow windows, the Copilot button (and its dropdown) of the page header, the Copilot panel button of the pull request header, the "Ask about this diff" button of each file in the pull request diff, and the "Ask Copilot about this file" button of the file view.
+// @description:fr Masque l’onglet « Agents » de la navigation du dépôt GitHub, y compris dans le menu affiché quand la fenêtre est étroite. Masque aussi le bouton Copilot et son menu dans l’en-tête de la page, le bouton du panneau Copilot dans l’en-tête des pull requests le bouton « Ask about this diff » de chaque fichier modifié et le bouton « Ask Copilot about this file » de l’affichage d’un fichier.
 // @license      MIT
 // @homepageURL  https://github.com/g-ongenae/userscripts/blob/main/userscripts/github/hide-agents-tab.user.js
 // @supportURL   https://github.com/g-ongenae/userscripts/issues
@@ -59,6 +59,9 @@
   // "Viewed"; the wrapper holding it and its tooltip is hidden too, so no gap is left behind
   const COPILOT_DIFF = '[data-testid="copilot-diff-explain-button"]';
   const COPILOT_DIFF_WRAPPER = `span:has(> ${COPILOT_DIFF})`;
+  // The "Ask Copilot about this file" button of the file view header, left of "Raw"; its tooltip
+  // is a popover sibling that only shows on hover, so it disappears with the button
+  const COPILOT_FILE = ':is([data-testid="copilot-ask-menu"], #blob-view-header-copilot-icon)';
 
   // ---------- Styles ----------
   // Injected at document-start so the tab never flashes
@@ -71,6 +74,7 @@
     ${COPILOT_PANEL} { display: none !important; }
     ${COPILOT_DIFF} { display: none !important; }
     ${COPILOT_DIFF_WRAPPER} { display: none !important; }
+    ${COPILOT_FILE} { display: none !important; }
   `;
   (document.head || document.documentElement).appendChild(style);
 })();
