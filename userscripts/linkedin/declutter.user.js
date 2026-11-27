@@ -2,7 +2,7 @@
 // @name         LinkedIn — Declutter & wide feed
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.4.12
+// @version      1.4.13
 // @description  Hides Jobs, For Business, Premium upsells, Groups/Newsletters/Events, the footer and the right rail; widens the feed and single posts and lays out the posts of company and profile pages like the feed; moves the composer to the left column; shows post images beside the text; adds panel buttons folding the left column of the feed and the side column of company and profile pages (folded by default); removes "Show translation" on French/English posts.
 // @description:fr Masque Emplois, Pour les entreprises, les offres Premium, Groupes, Newsletters, Événements, le pied de page et la colonne de droite. Élargit le fil et les publications, reprend cette mise en page sur les profils et pages d’entreprise, déplace l’éditeur à gauche et place les images à côté du texte. Permet de replier la colonne latérale, déjà repliée sur les profils et pages d’entreprise. Masque « Voir la traduction » pour les publications en français ou en anglais.
 // @license      MIT
@@ -127,6 +127,7 @@
         align-items: start !important;
       }
       [${POST}] > * { grid-column: 1 !important; }
+      [${POST}] > .update-v2-social-activity { grid-column: 1 / -1 !important; }
       [${POST}] > [${SIDE}] {
         grid-column: 2 !important; width: 100% !important;
         padding: 1px !important; box-sizing: border-box !important;
@@ -318,6 +319,13 @@
     // The post body is the box holding the (visually hidden) "Feed post" <h2>; collages nest deeper
     let post = box.parentElement && box.parentElement.closest(':has(> h2)');
     if (!post || !isPostBody(post)) return;
+    // The classic post detail wraps the author, text and media together, with comments outside.
+    // Split the content inside that wrapper so the comment box stays below the post.
+    const impression = post.querySelector(':scope > .fie-impression-container');
+    if (impression) {
+      if (impression === box || !impression.contains(box)) return;
+      post = impression;
+    }
     // Quote repost: the media belongs to the quoted post (a card with its own text, no <h2>).
     // Lay out that card instead of pushing the whole of it beside the reposter's text.
     const quoted = box.parentElement.closest(`:has(${TEXT_BOX})`);
@@ -330,15 +338,18 @@
     if (!others.length) return;
     // One row per block, plus a flexible row right above the action bar: a tall image pushes the
     // action bar down to its bottom edge instead of spreading the text apart
-    const bar = others.findIndex((c) => c.querySelector('[aria-label="Send"]'));
+    const bar = others.findIndex(
+      (c) => c.classList.contains('update-v2-social-activity') || c.querySelector('[aria-label="Send"]'),
+    );
     const before = bar < 0 ? others.length : bar;
+    const besideBar = bar >= 0 && !others[bar].classList.contains('update-v2-social-activity');
     const rows = [];
     if (before) rows.push(`repeat(${before}, auto)`);
     rows.push('minmax(0, 1fr)');
     if (others.length > before) rows.push(`repeat(${others.length - before}, auto)`);
     post.style.setProperty('grid-template-rows', rows.join(' '), 'important');
     others.forEach((c, i) => c.style.setProperty('grid-row', String(i < before ? i + 1 : i + 2), 'important'));
-    item.style.setProperty('grid-row', `1 / span ${bar < 0 ? before + 1 : before + 2}`, 'important');
+    item.style.setProperty('grid-row', `1 / span ${before + (besideBar ? 2 : 1)}`, 'important');
     // A quoted post wraps its media in a display: contents box: without a box of its own, its grid
     // placement is lost and the media lands in the first row only, pushing the text below it
     if (getComputedStyle(item).display === 'contents') item.style.setProperty('display', 'block', 'important');
@@ -891,6 +902,12 @@
         const card = blockOf(el, saved);
         // Never hide the profile card if the upsell lives inside it
         hide(card && !card.querySelector('a[href*="/in/"]') ? card : el.parentElement);
+      }
+    }
+    if (onPost) {
+      for (const el of document.querySelectorAll('aside .feed-identity-module__anchored-widget--premium-upsell')) {
+        const card = el.closest('.artdeco-card');
+        hide(card && !card.querySelector('a[href*="/in/"]') ? card : el, 'upsell');
       }
     }
 
