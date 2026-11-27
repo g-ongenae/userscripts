@@ -2,7 +2,7 @@
 // @name         GitHub — Hide the Agents tab
 // @namespace    https://github.com/g-ongenae/dotfiles
 // @author       g-ongenae
-// @version      1.4.2
+// @version      1.4.3
 // @description  Hides the "Agents" tab of the repository navigation bar, its entry in the overflow menu shown on narrow windows, the Copilot button (and its dropdown) of the page header, the Copilot panel button of the pull request header, and the "Ask about this diff" button of each file in the pull request diff.
 // @description:fr Masque l’onglet « Agents » de la navigation du dépôt GitHub, y compris dans le menu affiché quand la fenêtre est étroite. Masque aussi le bouton Copilot et son menu dans l’en-tête de la page, le bouton du panneau Copilot dans l’en-tête des pull requests et le bouton « Ask about this diff » de chaque fichier modifié.
 // @license      MIT
@@ -19,19 +19,28 @@
 (() => {
   'use strict';
 
-  // The tab links to /<owner>/<repo>/agents; matched by its link and id, whatever GitHub's language,
-  // in the navigation bar and in the "…" overflow menu that holds the tabs not fitting the window
-  const TAB = ':is(a[href$="/agents"], a[href*="/agents?"], #agents-tab)';
+  // The tab links to /<owner>/<repo>/agents; matched by its tab name and id, whatever GitHub's
+  // language, in the navigation bar and in the "…" overflow menu that holds the tabs not fitting the
+  // window. Its link is only a fallback for entries without a tab name: the Code tab of a repository
+  // named "agents" links to /<owner>/agents too
+  const TAB = [
+    'a[data-tab-item="agents"]',
+    'a[data-tab-item$="agents-tab"]',
+    '#agents-tab',
+    'a[href$="/agents"]:not([data-tab-item])',
+    'a[href*="/agents?"]:not([data-tab-item])',
+  ].join(', ');
+  const TAB_IS = `:is(${TAB})`;
   const HIDDEN = [
-    `nav[aria-label="Repository"] ${TAB}`,
-    `nav[aria-label="Repository"] li:has(> ${TAB})`,
+    `nav[aria-label="Repository"] ${TAB_IS}`,
+    `nav[aria-label="Repository"] li:has(> ${TAB_IS})`,
     '.js-responsive-underlinenav [data-menu-item$="agents-tab"]',
-    `[role="menu"] :is(li, [role="menuitem"]):has(> ${TAB})`,
+    `[role="menu"] :is(li, [role="menuitem"]):has(> ${TAB_IS})`,
   ].join(', ');
   // The hidden tab never fits the bar, so GitHub flags it as overflowing (aria-hidden) and shows a
   // "More" button just for it; drop that button unless another tab overflows too. Kept in its own
   // rule, and without nested :has() (invalid CSS), so a parse failure can't unhide the tab
-  const MORE = `nav[aria-label="Repository"]:not(:has(> ul > li[aria-hidden="true"] > a:not(${TAB})))
+  const MORE = `nav[aria-label="Repository"]:not(:has(> ul > li[aria-hidden="true"] > a:not(${TAB_IS})))
     > div:has(> [data-component="overflow-menu-button"])`;
   // The Copilot button of the page header, next to the search bar, and its dropdown arrow. The
   // dropdown is labelled, but the button itself isn't (its tooltip names it), so it is matched by
